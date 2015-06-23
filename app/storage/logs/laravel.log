@@ -1,0 +1,63 @@
+[2015-06-23 06:26:18] local.ERROR: exception 'ErrorException' with message 'opendir(./app,./app): ' in C:\xampp\htdocs\tickets\app\routes.php:17
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleError(2, 'opendir(./app,....', 'C:\\xampp\\htdocs...', 17, Array)
+#1 C:\xampp\htdocs\tickets\app\routes.php(17): opendir('./app')
+#2 [internal function]: {closure}()
+#3 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5398): call_user_func_array(Object(Closure), Array)
+#4 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5065): Illuminate\Routing\Route->run(Object(Illuminate\Http\Request))
+#5 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5053): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#6 C:\xampp\htdocs\tickets\bootstrap\compiled.php(715): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#7 C:\xampp\htdocs\tickets\bootstrap\compiled.php(696): Illuminate\Foundation\Application->dispatch(Object(Illuminate\Http\Request))
+#8 C:\xampp\htdocs\tickets\bootstrap\compiled.php(7825): Illuminate\Foundation\Application->handle(Object(Illuminate\Http\Request), 1, true)
+#9 C:\xampp\htdocs\tickets\bootstrap\compiled.php(8432): Illuminate\Session\Middleware->handle(Object(Illuminate\Http\Request), 1, true)
+#10 C:\xampp\htdocs\tickets\bootstrap\compiled.php(8379): Illuminate\Cookie\Queue->handle(Object(Illuminate\Http\Request), 1, true)
+#11 C:\xampp\htdocs\tickets\bootstrap\compiled.php(11049): Illuminate\Cookie\Guard->handle(Object(Illuminate\Http\Request), 1, true)
+#12 C:\xampp\htdocs\tickets\bootstrap\compiled.php(657): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
+#13 C:\xampp\htdocs\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
+#14 {main} [] []
+[2015-06-23 06:26:30] local.ERROR: exception 'ErrorException' with message 'opendir(app,app): ' in C:\xampp\htdocs\tickets\app\routes.php:17
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleError(2, 'opendir(app,app...', 'C:\\xampp\\htdocs...', 17, Array)
+#1 C:\xampp\htdocs\tickets\app\routes.php(17): opendir('app')
+#2 [internal function]: {closure}()
+#3 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5398): call_user_func_array(Object(Closure), Array)
+#4 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5065): Illuminate\Routing\Route->run(Object(Illuminate\Http\Request))
+#5 C:\xampp\htdocs\tickets\bootstrap\compiled.php(5053): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#6 C:\xampp\htdocs\tickets\bootstrap\compiled.php(715): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#7 C:\xampp\htdocs\tickets\bootstrap\compiled.php(696): Illuminate\Foundation\Application->dispatch(Object(Illuminate\Http\Request))
+#8 C:\xampp\htdocs\tickets\bootstrap\compiled.php(7825): Illuminate\Foundation\Application->handle(Object(Illuminate\Http\Request), 1, true)
+#9 C:\xampp\htdocs\tickets\bootstrap\compiled.php(8432): Illuminate\Session\Middleware->handle(Object(Illuminate\Http\Request), 1, true)
+#10 C:\xampp\htdocs\tickets\bootstrap\compiled.php(8379): Illuminate\Cookie\Queue->handle(Object(Illuminate\Http\Request), 1, true)
+#11 C:\xampp\htdocs\tickets\bootstrap\compiled.php(11049): Illuminate\Cookie\Guard->handle(Object(Illuminate\Http\Request), 1, true)
+#12 C:\xampp\htdocs\tickets\bootstrap\compiled.php(657): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
+#13 C:\xampp\htdocs\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
+#14 {main} [] []
+[2015-06-23 06:28:09] local.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected '}'' in C:\xampp\htdocs\tickets\app\routes.php:21
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
+[2015-06-23 06:28:29] local.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected end of file' in C:\xampp\htdocs\tickets\app\routes.php:22
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
+[2015-06-23 06:28:42] local.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected '?>'' in C:\xampp\htdocs\tickets\app\routes.php:22
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
+[2015-06-23 06:39:02] local.ERROR: exception 'InvalidArgumentException' with message 'There are no commands defined in the "migration" namespace.
+
+Did you mean this?
+    migrate' in C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php:516
+Stack trace:
+#0 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(550): Symfony\Component\Console\Application->findNamespace('migration')
+#1 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(190): Symfony\Component\Console\Application->find('migration:insta...')
+#2 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(124): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#3 C:\xampp\htdocs\tickets\artisan(59): Symfony\Component\Console\Application->run()
+#4 {main} [] []
+[2015-06-23 06:41:44] local.ERROR: exception 'InvalidArgumentException' with message 'There are no commands defined in the "make" namespace.' in C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php:516
+Stack trace:
+#0 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(550): Symfony\Component\Console\Application->findNamespace('make')
+#1 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(190): Symfony\Component\Console\Application->find('make:migration')
+#2 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(124): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#3 C:\xampp\htdocs\tickets\artisan(59): Symfony\Component\Console\Application->run()
+#4 {main} [] []

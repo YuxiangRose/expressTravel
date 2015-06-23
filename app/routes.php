@@ -10,8 +10,10 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
+//print App::environment();
 Route::get('/', function()
 {
-	return View::make('hello');
+	$images = scandir("../app/start");
+	print_r($images);
 });
+Route::get('home', 'HomeController@showWelcome');
