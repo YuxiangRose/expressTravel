@@ -10,4 +10,5 @@ return array(
     $vendorDir . '/ircmaxell/password-compat/lib/password.php',
     $vendorDir . '/phpseclib/phpseclib/phpseclib/Crypt/Random.php',
     $vendorDir . '/laravel/framework/src/Illuminate/Support/helpers.php',
+    $baseDir . '/app/library/handler.php',
 );
