@@ -1,59 +1,103 @@
 <?php
 	class Handler {
 
-        private $name;
+        private $path;
+        private $fileName;
+        private $fileType;
+        private $systemName;
+        private $airlineName;
+        private $tickeNumebr;
+        private $dateString;
+        private $orderOfDay;
+        private $dateOfFile;
+        private $fileContent;
 
-        public function __construct($name){
-            $this->name = $this->haha($name);
+        public function __construct($path,$fileName){
+
+            $this->path     = $path;
+            $this->fileName = $fileName; 
+            $this->parseFile($path, $fileName);
         }
 
-        public function getName(){
-            return $this->name;
+        public function getPath(){
+            return $this->path;
         }
 
-        public function haha($name){
-            return $name."this is it";
+        public function getFileName(){
+            return $this->fileName;
         }
 
-        public function hehe() {
-            echo 'myFunction is OK';
+        public function getFileType(){
+            return $this->fileType;
         }
 
-        public function parseFileName($fileName){
-        	
-            $dateString = substr($fileName, 0,8);
-        	$orderOfDay = substr($fileName,-2);
-
-        	echo $dateString;
-        	echo $orderOfDay;
+        public function getSystemName(){
+            return $this->systemName;
         }
 
-        public function getContent($fileName){
-            
+        public function getAirlineName(){
+            return $this->airlineName;
+        }
+
+        public function getTickeNumebr(){
+            return $this->tickeNumebr;
+        }
+
+        public function getDateString(){
+            return $this->dateString;
+        }
+
+        public function getOrderOfDay(){
+            return $this->orderOfDay;
+        }
+
+        public function getDateOfFile(){
+            return $this->dateOfFile;
+        }
+
+        public function getFileContent(){
+            return $this->fileContent;
+        }
+
+
+        public function parseFile($path, $fileName){
+
             $fileLines = array();
-
-        	$myfile = fopen($fileName, "r") or die("Unable to open file!");
-			while(!feof($myfile))
-            {
-                $fileLines[] = fgets($myfile);
-            }
-			fclose($myfile);
-
-            return $fileLines;
-        }
-
-        public function getFileDetails($fileLines){
-            $typeNeedle = "1 OF 1";
-            $numberNeedle = "PRI FF";
-
             $typeLine   = array();
             $numberLine = array();
             $parsedLine = array();
 
+            $typeNeedle = "1 OF 1";
+            $numberNeedle = "PRI FF";
+
+            //parse file name;
+            $dateString = substr($fileName, 0,8);
+            $orderOfDay = preg_replace("/[^0-9]/", "", substr($fileName,8));
+
+            $this->setDateString($dateString);
+            $this->setOrderOfDay($orderOfDay);
+
+            $date = new DateTime($dateString);
+            $this->setDateOfFile($date->format('Y-m-d'));
+
+            //parse file content into whole string;
+            $fileContent = "<pre>"; 
+            $fileContent .= file_get_contents($path.$fileName);
+            $fileContent .= "</pre>";
+
+            $this->setFileContent($fileContent);
+
+            //parse file to get all the details
+            $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
+            while(!feof($myfile))
+            {
+                $fileLines[] = fgets($myfile);
+            }
+            fclose($myfile);
 
             foreach ($fileLines as $key => $line) {
                 $posType = strpos($line, $typeNeedle);
-                $posNumber = strpos($line, $numberNeedle);
+                $posNumber = stripos($line, "PRI FF") + stripos($line, "FFFF") + stripos($line,"FFVV") ;
 
                 if($posType > 0){
                     $typeLine = explode("  ",trim($line));
@@ -66,28 +110,73 @@
             foreach ($typeLine as $key => $value) {
                 if(strpos($value, "/") > 0){
                     $type = substr($value, -2);
-                    $parsedLine['type'] = $type;
+                    $this->setFileType($type);
+                    //$parsedLine['type'] = $type;
                     switch ($type) {
                         case '1A':
+                            $this->setSystemName("AMADEUS");
                             $parsedLine['systemName'] = "AMADEUS";
                             break;
                         case '1V':
+                            $this->setSystemName("GALILEO");
                             $parsedLine['systemName'] = "GALILEO";
                             break;
                         case 'AA':
+                            $this->setSystemName("SABRE");
                             $parsedLine['systemName'] = "SABRE";
                             break;
                     }
                 }
             }
+            $this->setAirlineName($typeLine[0]);
             $parsedLine['airlineName'] = $typeLine[0];
 
             foreach ($numberLine as $key => $value) {
                 if(strlen($value) == 10){
                     $parsedLine['tickeNumebr'] = $value;
+                    $this->setTickeNumebr($value);
                 }
             }
-            var_dump($parsedLine);
+
         }
+
+        
+
+        public function setFileName($fileName){
+            $this->fileName = $fileName;
+        }
+
+        public function setFileType($fileType){
+            $this->fileType = $fileType;
+        }
+
+        public function setSystemName($systemName){
+            $this->systemName = $systemName;
+        }
+
+        public function setAirlineName($airlineName){
+            $this->airlineName = $airlineName;
+        }
+
+        public function setTickeNumebr($tickeNumebr){
+            $this->tickeNumebr = $tickeNumebr;
+        }
+
+        public function setDateString($dateString){
+            $this->dateString = $dateString;
+        }
+
+        public function setOrderOfDay($orderOfDay){
+            $this->orderOfDay = $orderOfDay;
+        }
+
+        public function setDateOfFile($dateOfFile){
+            $this->dateOfFile = $dateOfFile;
+        }
+
+        public function setFileContent($fileContent){
+            $this->fileContent = $fileContent;
+        }
+
     }
 ?>

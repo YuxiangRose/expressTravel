@@ -17,10 +17,11 @@ class TicketsController extends BaseController {
 
 	public function getIndex()
 	{
-		$handler = new handler("fsdfds");
-		$fileLines = $handler->getContent("../files/20150306-1.txt");
+		$handler = new handler("../files/","20150622;89.txt");
+		//$handler->getContent("../files/20150306-1.txt");
 		//$handler->getFileDetails($fileLines);
-		echo $handler->getName();
+		//echo $handler->getName();
+		var_dump($handler);
 	}
 
 }
