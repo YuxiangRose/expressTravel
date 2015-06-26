@@ -18,20 +18,19 @@ class TicketsController extends BaseController {
 	public function getIndex()
 	{		
 		return View::make('ticket');
-		//echo $this->fileConvertAndUpdate();
+		//$this->fileConvertAndUpdate();
 	}
 
 	public function fileConvertAndUpdate(){
-			
+		
 		$dir = "../files/";
 		$num = 0;
 		$documents_group = scandir($dir);
-				
 
 		foreach ($documents_group as $key => $value) {
 			if($value != "." && $value != ".."){
 				$handler = new handler($dir,$value);
-
+				
 				try {
 		            $document = Document::create(array(
 		                'path' 			=> $handler->getPath(),
@@ -56,7 +55,7 @@ class TicketsController extends BaseController {
 			}
 		}
 
-		return $num." files have been converted.";
+		echo $num." files have been converted.";
 	}
 
 }
