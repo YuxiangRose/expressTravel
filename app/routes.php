@@ -11,10 +11,5 @@
 |
 */
 //print App::environment();
-/*Route::get('/', function()
-{
-	$images = scandir("../app/start");
-	print_r($images);
-});*/
 Route::get('/', 'HomeController@showWelcome');
-Route::controller('dfd','TicketsController');
+Route::get('ticket','TicketsController@getIndex');
