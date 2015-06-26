@@ -17,11 +17,39 @@ class TicketsController extends BaseController {
 
 	public function getIndex()
 	{
-		$handler = new handler("../files/","20150622;89.txt");
-		//$handler->getContent("../files/20150306-1.txt");
-		//$handler->getFileDetails($fileLines);
-		//echo $handler->getName();
-		var_dump($handler);
+		$dir = "../files/";
+		$num = 0;
+		$documents_group = scandir($dir);
+		
+		foreach ($documents_group as $key => $value) {
+			if($value != "." && $value != ".."){
+				$handler = new handler($dir,$value);
+
+				try {
+		            $document = Document::create(array(
+		                'path' 			=> $handler->getPath(),
+		                'fileName'  	=> $handler->getFileName(),
+		                'fileType'  	=> $handler->getFileType(),
+		                'systemName'    => $handler->getSystemName(),
+		                'airlineName'   => $handler->getAirlineName(),
+		                'tickeNumebr'   => $handler->getTickeNumebr(),
+		                'dateString'    => $handler->getDateString(),
+		                'orderOfDay'    => $handler->getOrderOfDay(),
+		                'fileContent'   => $handler->getFileContent(),
+		                'dateOfFile'    => $handler->getDateOfFile(),
+		            ));
+		            $document->save();
+		            $num++;
+		            rename($dir.$value, "../done/".$value);
+		        } catch (Exception $e) {
+		            $response['info'] = "fail";
+		            $boolean = false;
+		            echo $e;
+		        }				
+			}
+		}
+
+		echo $num." files have been converted.";
 	}
 
 }
