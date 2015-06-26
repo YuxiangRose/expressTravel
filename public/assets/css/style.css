@@ -1,6 +1,6 @@
 body{background-color: #F1F1F1; margin: 0; padding: 0;}
-
-
+button:hover{cursor: pointer;}
+input[type=submit]:hover {cursor: pointer;}
 
 
 .container{width: 70%; min-height: 1000px; margin-right: auto; margin-left: auto;background-color: #fff; padding: 10px;}
@@ -10,4 +10,4 @@ body{background-color: #F1F1F1; margin: 0; padding: 0;}
 	.update-info h3{text-align: center; margin: 0;}
 .sub-container{margin-top: 5px; padding: 5px;}
 	.sub-container .ticket-field{width: 200px;}
-.text-field{width: 95%; min-height: 700px; border: 1px solid #000; margin-top: 15px; padding: 10px 0 0 64px;}
+.text-field{width: 93%; min-height: 700px; margin-top: 15px; padding: 10px 0 0 64px;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;}
