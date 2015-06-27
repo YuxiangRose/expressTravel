@@ -10,7 +10,7 @@
     <h1>Ticket search</h1>
   </div>
   <div class="update-info">
-    <h3>0 files have been convert and updated.</h3>
+    <h3>{{{$num}}} files have been convert and updated.</h3>
   </div>
   <div class="sub-container">
     <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
@@ -33,28 +33,25 @@
     $("button,input[type=submit]").button()
 
     $(".btn-search").click(function(event) {
-      /*//event.preventDefault();
-      var ticketNumber = $("input[name='ticketNumber']").val();
-      //$(".text-field").empty();
-      $.ajax({
-        method: "post",
-        url: "/search",
-        dataType: "json",
-        success: function(data){
-          //$(".text-field").append(data);
-          alert("dfsdf");
-        }
-      });*/
       event.preventDefault();
-      $.ajax({
-        method: "post",
-        url: "/search",
-        dataType: "text",
-        success: function(data){
-          $(".text-field").append("<pre>"+data+"</pre>");
-        }
-      });
+      var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+      if($.isNumeric(ticketNumber)){
+        $(".text-field").empty();
+        $.ajax({
+          method: "post",
+          url: "/search",
+          dataType: "json",
+          data: {ticketNumber: ticketNumber},
+          success: function(data){
+            $(".text-field").append(data['content']);
+          }
+        });
+      }else{
+        $("input[name='ticketNumber']").val('');
+        alert("please enter a number");
+      }
     });
+
 
     $(".btn-update").click(function(event) {
       event.preventDefault();
@@ -63,7 +60,7 @@
         url: "/update",
         dataType: "json",
         success: function(data){
-          $(".update-info h3").text(data+' files have been convert and updated.')
+          $(".update-info h3").text(data['num']+' files have been convert and updated.')
           $(".update-info").show();
           setTimeout(function() {
               $('.update-info').slideUp('slow');

@@ -71,8 +71,10 @@
             $numberNeedle = "PRI FF";
 
             //parse file name;
-            $dateString = substr($fileName, 0,8);
-            $orderOfDay = preg_replace("/[^0-9]/", "", substr($fileName,8));
+            $temp = preg_replace("/[^0-9]/", "", $fileName);
+            
+            $dateString = substr($temp, 0,8);
+            $orderOfDay = substr($temp,8,2);
 
             $this->setDateString($dateString);
             $this->setOrderOfDay($orderOfDay);
@@ -115,25 +117,29 @@
                     switch ($type) {
                         case '1A':
                             $this->setSystemName("AMADEUS");
-                            $parsedLine['systemName'] = "AMADEUS";
+                            //$parsedLine['systemName'] = "AMADEUS";
                             break;
                         case '1V':
                             $this->setSystemName("GALILEO");
-                            $parsedLine['systemName'] = "GALILEO";
+                            //$parsedLine['systemName'] = "GALILEO";
                             break;
                         case 'AA':
                             $this->setSystemName("SABRE");
-                            $parsedLine['systemName'] = "SABRE";
+                            //$parsedLine['systemName'] = "SABRE";
+                            break;
+                        case '1S':
+                            $this->setSystemName("Unknown");
+                            //$parsedLine['systemName'] = "Unknown";
                             break;
                     }
                 }
             }
             $this->setAirlineName($typeLine[0]);
-            $parsedLine['airlineName'] = $typeLine[0];
+            //$parsedLine['airlineName'] = $typeLine[0];
 
             foreach ($numberLine as $key => $value) {
                 if(strlen($value) == 10){
-                    $parsedLine['tickeNumebr'] = $value;
+                    //$parsedLine['tickeNumebr'] = $value;
                     $this->setTickeNumebr($value);
                 }
             }
