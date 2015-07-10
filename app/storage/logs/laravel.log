@@ -2457,3 +2457,7 @@ Stack trace:
 #16 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(641): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
 #17 C:\xampp\htdocs\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
 #18 {main} [] []
+[2015-07-09 04:48:35] home.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected '$table' (T_VARIABLE)' in C:\xampp\htdocs\tickets\app\database\migrations\2015_06_23_224235_create_files_table.php:31
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []

@@ -19,6 +19,7 @@
             $this->parseFile($path, $fileName);
         }
 
+        //getters
         public function getPath(){
             return $this->path;
         }
@@ -59,6 +60,42 @@
             return $this->fileContent;
         }
 
+        //setters
+        public function setFileName($fileName){
+            $this->fileName = $fileName;
+        }
+
+        public function setFileType($fileType){
+            $this->fileType = $fileType;
+        }
+
+        public function setSystemName($systemName){
+            $this->systemName = $systemName;
+        }
+
+        public function setAirlineName($airlineName){
+            $this->airlineName = $airlineName;
+        }
+
+        public function setTickeNumebr($tickeNumebr){
+            $this->tickeNumebr = $tickeNumebr;
+        }
+
+        public function setDateString($dateString){
+            $this->dateString = $dateString;
+        }
+
+        public function setOrderOfDay($orderOfDay){
+            $this->orderOfDay = $orderOfDay;
+        }
+
+        public function setDateOfFile($dateOfFile){
+            $this->dateOfFile = $dateOfFile;
+        }
+
+        public function setFileContent($fileContent){
+            $this->fileContent = $fileContent;
+        }
 
         public function parseFile($path, $fileName){
 
@@ -144,44 +181,6 @@
                 }
             }
 
-        }
-
-        
-
-        public function setFileName($fileName){
-            $this->fileName = $fileName;
-        }
-
-        public function setFileType($fileType){
-            $this->fileType = $fileType;
-        }
-
-        public function setSystemName($systemName){
-            $this->systemName = $systemName;
-        }
-
-        public function setAirlineName($airlineName){
-            $this->airlineName = $airlineName;
-        }
-
-        public function setTickeNumebr($tickeNumebr){
-            $this->tickeNumebr = $tickeNumebr;
-        }
-
-        public function setDateString($dateString){
-            $this->dateString = $dateString;
-        }
-
-        public function setOrderOfDay($orderOfDay){
-            $this->orderOfDay = $orderOfDay;
-        }
-
-        public function setDateOfFile($dateOfFile){
-            $this->dateOfFile = $dateOfFile;
-        }
-
-        public function setFileContent($fileContent){
-            $this->fileContent = $fileContent;
         }
 
     }

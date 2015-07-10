@@ -25,6 +25,9 @@ class CreateFilesTable extends Migration {
 			$table->string('orderOfDay',50);
 			$table->string('fileContent',65535);
 			$table->date('dateOfFile',50);
+			$table->string('paxName',100);
+			$table->string('rloc',50);
+			$table->string('ticketsType',50);
 			$table->timestamps();
 			
 		});
