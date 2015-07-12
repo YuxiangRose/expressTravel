@@ -128,7 +128,7 @@
                             //$parsedLine['systemName'] = "SABRE";
                             break;
                         case '1S':
-                            $this->setSystemName("Unknown");
+                            $this->setSystemName("SABRE");
                             //$parsedLine['systemName'] = "Unknown";
                             break;
                     }
