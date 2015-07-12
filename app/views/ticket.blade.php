@@ -10,12 +10,25 @@
     <h1>Ticket search</h1>
   </div>
   <div class="update-info">
-    <h3>{{{$num}}} files have been convert and updated.</h3>
+    <h3>{{$num}} files have been convert and updated.</h3>
   </div>
   <div class="sub-container">
-    <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
+    <div class="form-field">
+      <label>Ticket Number : </label>
+      <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
+    </div>
+    <div class="form-field">
+      <label>Passenger Name : </label>
+      <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter passenger name">
+    </div>
+    <div class="form-field">
+      <label>RLOC : </label>
+      <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter rloc number">
+    </div>
     <input type="submit" class="btn-search"value="Search">
     <button class="btn-update">Update</button>
+    <button class="btn-prev">PREV</button>
+    <button class="btn-next">NEXT</button>
   </div>
   <div class="text-field">
   </div>

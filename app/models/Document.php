@@ -9,7 +9,9 @@ class Document extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
-	protected $fillable = array("path","fileName","fileType","systemName","airlineName","tickeNumebr","dateString","orderOfDay","fileContent","dateOfFile");
+	protected $fillable = array("path","fileName","fileType","systemName","airlineName","tickeNumebr","dateString","orderOfDay","fileContent",
+		"dateOfFile","paxName","rloc","ticketsType");
+	
 	/**
 	 * The database table used by the model.
 	 *

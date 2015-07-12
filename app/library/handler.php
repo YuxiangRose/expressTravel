@@ -6,19 +6,24 @@
         private $fileType;
         private $systemName;
         private $airlineName;
-        private $tickeNumebr;
+        private $ticketNumber;
         private $dateString;
         private $orderOfDay;
         private $dateOfFile;
         private $fileContent;
+        private $rloc;
+        private $paxName;
+        private $ticketsType;
 
         public function __construct($path,$fileName){
 
             $this->path     = $path;
             $this->fileName = $fileName; 
-            $this->parseFile($path, $fileName);
+            //$this->parseFile($path, $fileName);
+            $this->convertFile($path, $fileName);
         }
 
+        //getters
         public function getPath(){
             return $this->path;
         }
@@ -39,8 +44,8 @@
             return $this->airlineName;
         }
 
-        public function getTickeNumebr(){
-            return $this->tickeNumebr;
+        public function getTicketNumber(){
+            return $this->ticketNumber;
         }
 
         public function getDateString(){
@@ -59,8 +64,85 @@
             return $this->fileContent;
         }
 
+        public function getRloc(){
+            return $this->rloc;
+        }
 
-        public function parseFile($path, $fileName){
+        public function getPaxName(){
+            return $this->paxName;
+        }
+
+        public function getTicketsType(){
+            return $this->ticketsType;
+        }
+
+        //setters
+        public function setFileName($fileName){
+            $this->fileName = $fileName;
+        }
+
+        public function setFileType($fileType){
+            $this->fileType = $fileType;
+        }
+
+        public function setSystemName($systemName){
+            $this->systemName = $systemName;
+        }
+
+        public function setAirlineName($airlineName){
+            $this->airlineName = $airlineName;
+        }
+
+        public function setTicketNumber($ticketNumber){
+            $this->ticketNumber = $ticketNumber;
+        }
+
+        public function setDateString($dateString){
+            $this->dateString = $dateString;
+        }
+
+        public function setOrderOfDay($orderOfDay){
+            $this->orderOfDay = $orderOfDay;
+        }
+
+        public function setDateOfFile($dateOfFile){
+            $this->dateOfFile = $dateOfFile;
+        }
+
+        public function setFileContent($fileContent){
+            $this->fileContent = $fileContent;
+        }
+
+        public function setRloc($rloc){
+            $this->rloc = $rloc;
+        }
+
+        public function setPaxName($paxName){
+            $this->paxName = $paxName;
+        }
+
+        public function setTicketsType($ticketsType){
+            $this->ticketsType = $ticketsType;
+        }
+
+
+        public function convertFile($path,$fileName){
+            $ticketFileNeedle = "**ITINERARY**";
+            $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
+            
+            $fileString = file_get_contents($path.$fileName);
+
+            $documentType = strpos($fileString, $ticketFileNeedle);
+            if($documentType > 0 ){
+                $this->parseTicket($path,$fileName);   
+            }
+        }
+
+
+
+
+
+        public function parseTicket($path, $fileName){
 
             $fileLines = array();
             $typeLine   = array();
@@ -103,15 +185,23 @@
 
                 if($posType > 0){
                     $typeLine = explode("  ",trim($line));
+                    $nameLineIndex = $key + 1;
                 }
                 if($posNumber > 0){
                     $numberLine = explode(" ",trim($line));
                 }
             }
 
+            $nameLineArray = explode("  ", $fileLines[$nameLineIndex]);
+            $paxName = str_replace("/", " ", $nameLineArray[0]);
+            $this->setPaxName($paxName);
+
             foreach ($typeLine as $key => $value) {
                 if(strpos($value, "/") > 0){
-                    $type = substr($value, -2);
+                    $value = explode("/",trim($value));
+                    $rloc  = $value[0];
+                    $type  = $value[1];
+                    $this->setRloc($rloc);
                     $this->setFileType($type);
                     //$parsedLine['type'] = $type;
                     switch ($type) {
@@ -136,52 +226,23 @@
             }
             $this->setAirlineName($typeLine[0]);
             //$parsedLine['airlineName'] = $typeLine[0];
-
+            
             foreach ($numberLine as $key => $value) {
                 if(strlen($value) == 10){
                     //$parsedLine['tickeNumebr'] = $value;
-                    $this->setTickeNumebr($value);
+                    $this->setTicketNumber($value);
                 }
             }
 
+            $this->setTicketsType("Ticket");
         }
 
-        
+        public function parseRefunded($path,$fileName){
 
-        public function setFileName($fileName){
-            $this->fileName = $fileName;
         }
 
-        public function setFileType($fileType){
-            $this->fileType = $fileType;
-        }
+        public function parseExchange($path,$fileName){
 
-        public function setSystemName($systemName){
-            $this->systemName = $systemName;
-        }
-
-        public function setAirlineName($airlineName){
-            $this->airlineName = $airlineName;
-        }
-
-        public function setTickeNumebr($tickeNumebr){
-            $this->tickeNumebr = $tickeNumebr;
-        }
-
-        public function setDateString($dateString){
-            $this->dateString = $dateString;
-        }
-
-        public function setOrderOfDay($orderOfDay){
-            $this->orderOfDay = $orderOfDay;
-        }
-
-        public function setDateOfFile($dateOfFile){
-            $this->dateOfFile = $dateOfFile;
-        }
-
-        public function setFileContent($fileContent){
-            $this->fileContent = $fileContent;
         }
 
     }

@@ -2457,3 +2457,37 @@ Stack trace:
 #16 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(641): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
 #17 C:\xampp\htdocs\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
 #18 {main} [] []
+[2015-07-09 04:48:35] home.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected '$table' (T_VARIABLE)' in C:\xampp\htdocs\tickets\app\database\migrations\2015_06_23_224235_create_files_table.php:31
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
+[2015-07-11 09:16:15] home.ERROR: exception 'ErrorException' with message 'substr() expects parameter 1 to be string, array given' in C:\xampp\htdocs\tickets\app\library\handler.php:175
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleError(2, 'substr() expect...', 'C:\\xampp\\htdocs...', 175, Array)
+#1 C:\xampp\htdocs\tickets\app\library\handler.php(175): substr(Array, -2)
+#2 C:\xampp\htdocs\tickets\app\library\handler.php(110): Handler->parseTicket('../files/', '2015.06.25-10.T...')
+#3 C:\xampp\htdocs\tickets\app\library\handler.php(20): Handler->convertFile('../files/', '2015.06.25-10.T...')
+#4 C:\xampp\htdocs\tickets\app\controllers\TicketsController.php(33): Handler->__construct('../files/', '2015.06.25-10.T...')
+#5 C:\xampp\htdocs\tickets\app\controllers\TicketsController.php(20): TicketsController->fileConvertAndUpdate()
+#6 [internal function]: TicketsController->getIndex()
+#7 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(231): call_user_func_array(Array, Array)
+#8 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(93): Illuminate\Routing\Controller->callAction('getIndex', Array)
+#9 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(62): Illuminate\Routing\ControllerDispatcher->call(Object(TicketsController), Object(Illuminate\Routing\Route), 'getIndex')
+#10 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\Router.php(967): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request), 'TicketsControll...', 'getIndex')
+#11 [internal function]: Illuminate\Routing\Router->Illuminate\Routing\{closure}()
+#12 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\Route.php(109): call_user_func_array(Object(Closure), Array)
+#13 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\Router.php(1033): Illuminate\Routing\Route->run(Object(Illuminate\Http\Request))
+#14 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Routing\Router.php(1001): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#15 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(775): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#16 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(745): Illuminate\Foundation\Application->dispatch(Object(Illuminate\Http\Request))
+#17 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Session\Middleware.php(72): Illuminate\Foundation\Application->handle(Object(Illuminate\Http\Request), 1, true)
+#18 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Cookie\Queue.php(47): Illuminate\Session\Middleware->handle(Object(Illuminate\Http\Request), 1, true)
+#19 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Cookie\Guard.php(51): Illuminate\Cookie\Queue->handle(Object(Illuminate\Http\Request), 1, true)
+#20 C:\xampp\htdocs\tickets\vendor\stack\builder\src\Stack\StackedHttpKernel.php(23): Illuminate\Cookie\Guard->handle(Object(Illuminate\Http\Request), 1, true)
+#21 C:\xampp\htdocs\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(641): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
+#22 C:\xampp\htdocs\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
+#23 {main} [] []
+[2015-07-11 09:49:46] home.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'Call to undefined method Handler::setTicketNumber()' in C:\xampp\htdocs\tickets\app\library\handler.php:233
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
