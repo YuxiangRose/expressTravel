@@ -151,10 +151,6 @@
             }
         }
 
-
-
-
-
         public function parseTicket($path, $fileName){
 
             $fileLines = array();
@@ -206,7 +202,7 @@
             }
 
             $nameLineArray = explode("  ", $fileLines[$nameLineIndex]);
-            $paxName = str_replace("/", " ", $nameLineArray[0]);
+            $paxName = str_replace("/", " ", trim($nameLineArray[0]));
             $this->setPaxName($paxName);
 
             foreach ($typeLine as $key => $value) {

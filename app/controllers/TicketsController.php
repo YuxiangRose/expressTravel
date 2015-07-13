@@ -91,26 +91,35 @@ class TicketsController extends BaseController {
 		$mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
 		$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
 
+		if(strlen($ticketNumber) == 10 ){
+			$model = Document::where('ticketNumber', '=', $ticketNumber)->get();	
+		}else{
+			$model = Document::where('paxName', 'LIKE', '%'.$first.'%')
+							 ->where('paxName','LIKE','%'.$mid.'%')
+							 ->where('paxName','LIKE','%'.$last.'%')
+							 ->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
+							 ->get();	
+		}
 		//$model = Document::where('tickeNumebr', '=', $ticketNumber)->first();
-		$model = Document::where('paxName', 'LIKE', '%'.$first.'%')
-			->where('paxName','LIKE','%'.$mid.'%')
-			->where('paxName','LIKE','%'.$last.'%')
-			->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
-			->get();
 		
+		$index = 0;
 		if(sizeof($model)>0){
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
 				//if($document){
-					$data['content'][]=$document['fileContent'];
+					$data[$index]['content']=$document['fileContent'];
+					$data[$index]['dateOfFile']=$document['dateOfFile'];
+					$data[$index]['paxName']=$document['paxName'];
+					$data[$index]['airlineName']=$document['airlineName'];
 				//}else{
 					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
 				//}
+				$index++;
 			}
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data['content'][] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
+			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
 		}
 		
 		echo json_encode($data);

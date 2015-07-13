@@ -31,6 +31,7 @@
       <button class="btn-prev">PREV</button>
       <button class="btn-next">NEXT</button>
     </div>
+    <input type="hidden" name="ticketHolder" value="">
   </div>
   <div id="text-field">
   </div>
@@ -41,7 +42,9 @@
 
 <script>
   $(document).ready(function() {
-
+    $( "#text-field" ).accordion();
+    $('.btn-prev').attr('disabled','disabled');
+    $('.btn-next').attr('disabled','disabled');
 
     setTimeout(function() {
         $('.update-info').slideUp('slow');
@@ -72,16 +75,26 @@
           dataType: "json",
           data: {ticketNumber: ticketNumber, passengerName: passengerName},
           success: function(data){
-            $.each(data['content'],function(index,item){
-              $("#text-field").append("<h3 class='block-hearder'>this is ticket</h3><div class='text-block'>"+item+"</div>");
-            });
-            $( "#text-field" ).accordion({
-              collapsible: true
-            });
+            if(data.length>1){
+              $.each(data,function(index,item){
+                $("#text-field").append("<h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div>");
+              });
+              
+              $( "#text-field" ).accordion( "destroy" );
+              $( "#text-field" ).accordion({
+                collapsible: true
+              });
+              
+            }else{
+              $.each(data,function(index,item){
+                $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>");
+              });
+            }
+            $("input[name='ticketNumber']").val('');
+            $("input[name='passengerName']").val('');
+            $("input[name='rloc']").val('');
           }
         });
-      }else{
-        $("input[name='ticketNumber']").val('');
       }
     });
 
