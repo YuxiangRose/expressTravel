@@ -128,13 +128,26 @@
 
         public function convertFile($path,$fileName){
             $ticketFileNeedle = "**ITINERARY**";
+            $refundFileNeedle1 = "*****REFUNDED TICKETS";
+            $refundFileNeedle2 = "***REFUNDED TICKETS";
+            $refundFileNeedle3 = "REFUND NOTICE";
+            $refundType = array();
             $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
             
             $fileString = file_get_contents($path.$fileName);
 
-            $documentType = strpos($fileString, $ticketFileNeedle);
-            if($documentType > 0 ){
+            $isTicket = strpos($fileString, $ticketFileNeedle);
+            if($isTicket > 0 ){
                 $this->parseTicket($path,$fileName);   
+            }
+            
+            $refundType['1A'] = strpos($fileString, $refundFileNeedle1);
+            $refundType['1V'] = strpos($fileString, $refundFileNeedle2);
+            $refundType['AA'] = strpos($fileString, $refundFileNeedle3);
+
+            $isRefund = strpos($fileString, $refundFileNeedle1) + strpos($fileString, $refundFileNeedle2)+ strpos($fileString, $refundFileNeedle3);
+            if($isRefund > 0){
+                $this->parseRefunded($path,$fileName,$refundType);
             }
         }
 
@@ -237,8 +250,66 @@
             $this->setTicketsType("Ticket");
         }
 
-        public function parseRefunded($path,$fileName){
+        public function parseRefunded($path,$fileName,$refundType){
 
+            $fileLines = array();
+            $numberLine = array();
+            $airLine = array();
+            $nameLine = array();
+
+            //parse file name;
+            $temp = preg_replace("/[^0-9]/", "", $fileName);
+            
+            $dateString = substr($temp, 0,8);
+            $orderOfDay = substr($temp,8,2);
+
+            $this->setDateString($dateString);
+            $this->setOrderOfDay($orderOfDay);
+
+            $date = new DateTime($dateString);
+            $this->setDateOfFile($date->format('Y-m-d'));
+
+            //parse file content into whole string;
+            $fileContent = "<pre>"; 
+            $fileContent .= file_get_contents($path.$fileName);
+            $fileContent .= "</pre>";
+
+            $this->setFileContent($fileContent);
+
+            //parse file to get all the details
+            $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
+            while(!feof($myfile))
+            {
+                $fileLines[] = fgets($myfile);
+            }
+            fclose($myfile);
+
+            foreach($refundType as $key => $value){
+                if($value > 0){
+                     $type  = $key;
+                     switch ($type) {
+                        case '1A':
+                            $this->setSystemName("AMADEUS");
+                            //$parsedLine['systemName'] = "AMADEUS";
+                            break;
+                        case '1V':
+                            $this->setSystemName("GALILEO");
+                            //$parsedLine['systemName'] = "GALILEO";
+                            break;
+                        case 'AA':
+                            $this->setSystemName("SABRE");
+                            //$parsedLine['systemName'] = "SABRE";
+                            break;
+                    }
+                }
+            }
+
+            foreach ($fileLines as $key => $line) {
+                
+            }
+
+            $this->setRloc("Unknown");
+            $this->setTicketsType("Refund");
         }
 
         public function parseExchange($path,$fileName){

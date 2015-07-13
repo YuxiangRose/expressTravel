@@ -39,7 +39,7 @@ class TicketsController extends BaseController {
 			                'fileType'  	=> $handler->getFileType(),
 			                'systemName'    => $handler->getSystemName(),
 			                'airlineName'   => $handler->getAirlineName(),
-			                'tickeNumebr'   => $handler->getTicketNumber(),
+			                'ticketNumber'  => $handler->getTicketNumber(),
 			                'dateString'    => $handler->getDateString(),
 			                'orderOfDay'    => $handler->getOrderOfDay(),
 			                'fileContent'   => $handler->getFileContent(),
@@ -73,15 +73,44 @@ class TicketsController extends BaseController {
 
 	public function search(){
 		$data = array();
-		if(is_numeric($_POST['ticketNumber'])){
-			$ticketNumber = $_POST['ticketNumber'];
-		}
-		$model = Document::where('tickeNumebr', '=', $ticketNumber)->first();
-		if($model){
-			$document = $model->getAttributes();
-			$data['content'] = $document['fileContent']; 	
+		if(($_POST['ticketNumber'] != null) || (is_numeric($_POST['ticketNumber']))){
+			$ticketNumber = trim($_POST['ticketNumber']);
 		}else{
-			$data['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
+			$ticketNumber = "";
+		}
+
+		if (($_POST['passengerName'] != null)) {
+			$passengerName = strtoupper(trim($_POST['passengerName']));
+		}else{
+			$passengerName = null;
+		}
+
+		$parsePassengerName = explode(" ", $passengerName);
+
+		$first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
+		$mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
+		$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
+
+		//$model = Document::where('tickeNumebr', '=', $ticketNumber)->first();
+		$model = Document::where('paxName', 'LIKE', '%'.$first.'%')
+			->where('paxName','LIKE','%'.$mid.'%')
+			->where('paxName','LIKE','%'.$last.'%')
+			->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
+			->get();
+		
+		if(sizeof($model)>0){
+			foreach ($model as $key => $value) {
+				$document = $value->getAttributes();
+				//if($document){
+					$data['content'][]=$document['fileContent'];
+				//}else{
+					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
+				//}
+			}
+			//$document = $model[0]->getAttributes();
+			//$data['content'] = $document['fileContent']; 	
+		}else{
+			$data['content'][] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
 		}
 		
 		echo json_encode($data);

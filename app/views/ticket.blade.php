@@ -25,12 +25,14 @@
       <label>RLOC : </label>
       <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter rloc number">
     </div>
-    <input type="submit" class="btn-search"value="Search">
-    <button class="btn-update">Update</button>
-    <button class="btn-prev">PREV</button>
-    <button class="btn-next">NEXT</button>
+    <div class="button-field">
+      <input type="submit" class="btn-search"value="Search">
+      <button class="btn-update">Update</button>
+      <button class="btn-prev">PREV</button>
+      <button class="btn-next">NEXT</button>
+    </div>
   </div>
-  <div class="text-field">
+  <div id="text-field">
   </div>
 </div>
 @stop
@@ -39,6 +41,8 @@
 
 <script>
   $(document).ready(function() {
+
+
     setTimeout(function() {
         $('.update-info').slideUp('slow');
     }, 1000);
@@ -47,21 +51,37 @@
 
     $(".btn-search").click(function(event) {
       event.preventDefault();
+      var noError = true; 
+
       var ticketNumber = $.trim($("input[name='ticketNumber']").val());
-      if($.isNumeric(ticketNumber)){
-        $(".text-field").empty();
+      var passengerName = $.trim($("input[name='passengerName']").val());
+
+      if($.isNumeric(ticketNumber) || ticketNumber==""){
+        noError = true;
+      }else{
+        noError = false;
+        $("input[name='ticketNumber']").val('');
+        alert("please enter a number");
+      }
+
+      if(noError){
+        $("#text-field").empty();
         $.ajax({
           method: "post",
           url: "/search",
           dataType: "json",
-          data: {ticketNumber: ticketNumber},
+          data: {ticketNumber: ticketNumber, passengerName: passengerName},
           success: function(data){
-            $(".text-field").append(data['content']);
+            $.each(data['content'],function(index,item){
+              $("#text-field").append("<h3 class='block-hearder'>this is ticket</h3><div class='text-block'>"+item+"</div>");
+            });
+            $( "#text-field" ).accordion({
+              collapsible: true
+            });
           }
         });
       }else{
         $("input[name='ticketNumber']").val('');
-        alert("please enter a number");
       }
     });
 
