@@ -1,6 +1,11 @@
 <?php
 	class Handler {
 
+        const AMADEUSREFOUND = "*****REFUNDED TICKETS";
+        const GALILEOREFOUND = "***REFUNDED TICKETS";
+        const SABREREFOUND = "REFUND NOTICE";
+        const ticketFileNeedle = "**ITINERARY**";
+
         private $path;
         private $fileName;
         private $fileType;
@@ -127,25 +132,26 @@
 
 
         public function convertFile($path,$fileName){
-            $ticketFileNeedle = "**ITINERARY**";
-            $refundFileNeedle1 = "*****REFUNDED TICKETS";
-            $refundFileNeedle2 = "***REFUNDED TICKETS";
-            $refundFileNeedle3 = "REFUND NOTICE";
+            //$ticketFileNeedle = "**ITINERARY**";
+            //$AMADEUSREFOUND = "*****REFUNDED TICKETS";
+            //$GALILEOREFOUND = "***REFUNDED TICKETS";
+            //$SABREREFOUND = "REFUND NOTICE";
+            //
             $refundType = array();
             $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
             
             $fileString = file_get_contents($path.$fileName);
 
-            $isTicket = strpos($fileString, $ticketFileNeedle);
+            $isTicket = strpos($fileString, Handler::ticketFileNeedle);
             if($isTicket > 0 ){
                 $this->parseTicket($path,$fileName);   
             }
             
-            $refundType['1A'] = strpos($fileString, $refundFileNeedle1);
-            $refundType['1V'] = strpos($fileString, $refundFileNeedle2);
-            $refundType['AA'] = strpos($fileString, $refundFileNeedle3);
+            $refundType['1A'] = strpos($fileString, Handler::AMADEUSREFOUND);
+            $refundType['1V'] = strpos($fileString, Handler::GALILEOREFOUND);
+            $refundType['AA'] = strpos($fileString, Handler::SABREREFOUND);
 
-            $isRefund = strpos($fileString, $refundFileNeedle1) + strpos($fileString, $refundFileNeedle2)+ strpos($fileString, $refundFileNeedle3);
+            $isRefund = strpos($fileString, Handler::AMADEUSREFOUND) + strpos($fileString,Handler::GALILEOREFOUND)+ strpos($fileString, Handler::SABREREFOUND);
             if($isRefund > 0){
                 $this->parseRefunded($path,$fileName,$refundType);
             }
@@ -250,8 +256,8 @@
 
             $fileLines = array();
             $numberLine = array();
-            $airLine = array();
-            $nameLine = array();
+            $airLineArray = array();
+            $nameLineArray = array();
 
             //parse file name;
             $temp = preg_replace("/[^0-9]/", "", $fileName);
@@ -283,25 +289,58 @@
             foreach($refundType as $key => $value){
                 if($value > 0){
                      $type  = $key;
+                     $this->setFileType($type);
                      switch ($type) {
                         case '1A':
                             $this->setSystemName("AMADEUS");
-                            //$parsedLine['systemName'] = "AMADEUS";
+                            foreach ($fileLines as $key => $line) {
+
+                            }                            
                             break;
                         case '1V':
                             $this->setSystemName("GALILEO");
-                            //$parsedLine['systemName'] = "GALILEO";
+                            foreach ($fileLines as $key => $line) {
+                                $posNeedle = strpos($line,Handler::GALILEOREFOUND);
+                                if($posNeedle>0){
+                                    $nameLineIndex = $key - 3;
+                                    $ticketNumerLineIndex = $key + 1;
+                                    $airLineIndex = $key - 1;
+                                    break;
+                                }
+                            }
+                            $nameLineArray = explode("  ", $fileLines[$nameLineIndex]);
+                            $paxName = str_replace("/", " ", trim($nameLineArray[0]));
+                            $this->setPaxName($paxName);
+
+                            $airLineArray = explode("   ", $fileLines[$airLineIndex]);
+                            $airLineName = str_replace("/", " ", trim($airLineArray[0]));
+                            $this->setAirlineName($airLineName);
+
+                            $numberLine = trim($fileLines[$ticketNumerLineIndex]);
+                            $numberLineArray = explode(" ",$numberLine);
+                        
+                            foreach ($numberLineArray as $key => $value) {
+                                echo $value;
+                                echo "<br>";
+                                if(strlen($value) == 10){
+                                    //$parsedLine['tickeNumebr'] = $value;
+                                    $this->setTicketNumber($value);
+                                    echo $value;
+                                    echo $this->ticketNumber; die;
+                                }
+                            }
+
                             break;
                         case 'AA':
                             $this->setSystemName("SABRE");
-                            //$parsedLine['systemName'] = "SABRE";
+                            foreach ($fileLines as $key => $line) {    
+                            }
                             break;
                     }
                 }
             }
-
-            foreach ($fileLines as $key => $line) {
-                
+            die;
+            foreach ($fileLines as $key => $line) {    
             }
 
             $this->setRloc("Unknown");
