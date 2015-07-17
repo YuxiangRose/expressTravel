@@ -23,7 +23,7 @@
     </div>
     <div class="form-field">
       <label>RLOC : </label>
-      <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter rloc number">
+      <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
     </div>
     <div class="button-field">
       <input type="submit" class="btn-search"value="Search">
@@ -88,6 +88,8 @@
             }else{
               $.each(data,function(index,item){
                 $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>");
+                $('.btn-prev').button( "enable" );
+                $('.btn-next').button( "enable" );
               });
             }
             $("input[name='ticketNumber']").val('');

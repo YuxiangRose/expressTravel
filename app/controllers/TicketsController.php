@@ -31,7 +31,7 @@ class TicketsController extends BaseController {
 		foreach ($documents_group as $key => $value) {
 			if($value != "." && $value != ".."){
 				$handler = new handler($dir,$value);
-				var_dump($handler);
+				//var_dump($handler);
 				/*if($handler->getFileType() != NULL){
 					try {
 			            $document = Document::create(array(
