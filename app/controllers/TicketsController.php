@@ -86,6 +86,13 @@ class TicketsController extends BaseController {
 			$passengerName = null;
 		}
 
+
+		if (($_POST['rloc'] != null)) {
+			$rloc = strtoupper(trim($_POST['rloc']));
+		}else{
+			$rloc = "";
+		}
+
 		$parsePassengerName = explode(" ", $passengerName);
 
 		$first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
@@ -93,13 +100,16 @@ class TicketsController extends BaseController {
 		$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
 
 		if(strlen($ticketNumber) == 10 ){
-			$model = Document::where('ticketNumber', '=', $ticketNumber)->get();	
+			$model = Document::where('ticketNumber', '=', $ticketNumber)->get();
+		}elseif(strlen($rloc) == 6 ){
+			$model = Document::where('rloc', '=', $rloc)->get();
 		}else{
 			$model = Document::where('paxName', 'LIKE', '%'.$first.'%')
-							 ->where('paxName','LIKE','%'.$mid.'%')
-							 ->where('paxName','LIKE','%'.$last.'%')
-							 ->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
-							 ->get();	
+				->where('paxName','LIKE','%'.$mid.'%')
+				->where('paxName','LIKE','%'.$last.'%')
+				->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
+				->where('rloc', 'LIKE', '%'.$rloc.'%')
+				->get();
 		}
 		//$model = Document::where('tickeNumebr', '=', $ticketNumber)->first();
 		
@@ -112,6 +122,8 @@ class TicketsController extends BaseController {
 					$data[$index]['dateOfFile']=$document['dateOfFile'];
 					$data[$index]['paxName']=$document['paxName'];
 					$data[$index]['airlineName']=$document['airlineName'];
+					$data[$index]['orderOfDay']=$document['orderOfDay'];
+					$data[$index]['ticketNumber']=$document['ticketNumber'];
 				//}else{
 					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
 				//}
@@ -122,7 +134,36 @@ class TicketsController extends BaseController {
 		}else{
 			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
 		}
-		
+		echo json_encode($data);
+	}
+
+	/**
+	 * function next()
+	 * Searching the database to find the dateOfFile (2015-06-25) and the orderOfDay
+	 * Check the maximum orderOfDay there are on the same date
+	 * Passes content, orderOfDay and maxOrderNumber to the view (ticket.blade.php)
+	 */
+	public function next(){
+		$data = array();
+		$nextOrderOfDay = $_POST['orderOfDay'] + 1;
+		$dateOfFile = $_POST['dateOfFile'];
+
+		$model = Document::where('orderOfDay', '=', $nextOrderOfDay)->where('dateOfFile', '=', $dateOfFile)->get();
+		$model_orderOfDay = Document::where('dateOfFile', '=', $dateOfFile)->get();
+
+		$allOrderNumbers = array();
+		foreach($model_orderOfDay as $key => $value){
+			$allOrderNumbers[] = $value->orderOfDay;
+		}
+		$maxOrderNumber = max($allOrderNumbers);
+
+		if($nextOrderOfDay > $maxOrderNumber){
+			$data['content'] = '<p>Reached MAX record<br>Total records for the day: ' . $maxOrderNumber . '</p>';
+			$data['maxOrderNumber'] = $maxOrderNumber;
+		}else{
+			$data['content'] = $model[0]->fileContent;
+			$data['orderOfDay'] = $model[0]->orderOfDay;
+		}
 		echo json_encode($data);
 	}
 }
