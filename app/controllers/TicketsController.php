@@ -74,30 +74,34 @@ class TicketsController extends BaseController {
 
 	public function search(){
 		$data = array();
+		/* Check if ticket number entered is not null and is number */
 		if(($_POST['ticketNumber'] != null) || (is_numeric($_POST['ticketNumber']))){
 			$ticketNumber = trim($_POST['ticketNumber']);
 		}else{
 			$ticketNumber = "";
 		}
 
+		/* Parse the passenger name by space or slash */
 		if (($_POST['passengerName'] != null)) {
 			$passengerName = strtoupper(trim($_POST['passengerName']));
+			if(strpos($passengerName,'/')){
+				$parsePassengerName = explode("/", $passengerName);
+			}else{
+				$parsePassengerName = explode(" ", $passengerName);
+			}
+			$first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
+			$mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
+			$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
 		}else{
 			$passengerName = null;
 		}
 
-
+		/* Check if RLOC is entered */
 		if (($_POST['rloc'] != null)) {
 			$rloc = strtoupper(trim($_POST['rloc']));
 		}else{
 			$rloc = "";
 		}
-
-		$parsePassengerName = explode(" ", $passengerName);
-
-		$first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
-		$mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
-		$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
 
 		if(strlen($ticketNumber) == 10 ){
 			$model = Document::where('ticketNumber', '=', $ticketNumber)->get();
@@ -122,7 +126,7 @@ class TicketsController extends BaseController {
 					$data[$index]['dateOfFile']=$document['dateOfFile'];
 					$data[$index]['paxName']=$document['paxName'];
 					$data[$index]['airlineName']=$document['airlineName'];
-					$data[$index]['orderOfDay']=$document['orderOfDay'];
+					$data[$index]['systemName']=$document['systemName'];
 					$data[$index]['ticketNumber']=$document['ticketNumber'];
 				//}else{
 					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
@@ -145,25 +149,28 @@ class TicketsController extends BaseController {
 	 */
 	public function next(){
 		$data = array();
-		$nextOrderOfDay = $_POST['orderOfDay'] + 1;
-		$dateOfFile = $_POST['dateOfFile'];
+		$systemName = $_POST['systemName'];
+		$nextTicketNumber = $_POST['ticketNumber'] + 1;
 
-		$model = Document::where('orderOfDay', '=', $nextOrderOfDay)->where('dateOfFile', '=', $dateOfFile)->get();
-		$model_orderOfDay = Document::where('dateOfFile', '=', $dateOfFile)->get();
+		$model = Document::where('systemName', '=', $systemName)
+							->where('ticketNumber', '=', ($nextTicketNumber))->get();
 
-		$allOrderNumbers = array();
-		foreach($model_orderOfDay as $key => $value){
-			$allOrderNumbers[] = $value->orderOfDay;
-		}
-		$maxOrderNumber = max($allOrderNumbers);
-
-		if($nextOrderOfDay > $maxOrderNumber){
-			$data['content'] = '<p>Reached MAX record<br>Total records for the day: ' . $maxOrderNumber . '</p>';
-			$data['maxOrderNumber'] = $maxOrderNumber;
-		}else{
+		/* Finds the largest ticket number */
+//		$allTicketNumber = array();
+//		foreach($model as $key => $value){
+//			$allTicketNumber[] = $value->ticketNumber;
+//		}
+//		$maxTicketNumber = max($allTicketNumber);
+//		$nextTickerNumber = $ticketNumber + 1;
+//
+//
+//		if($nextTickerNumber > $maxTicketNumber){
+//			$data['content'] = '<p>Reached MAX record<br>End of record</p>';
+//		}else{
 			$data['content'] = $model[0]->fileContent;
-			$data['orderOfDay'] = $model[0]->orderOfDay;
-		}
+			$data['ticketNumber'] = $model[0]->ticketNumber;
+			$data['systemName'] = $model[0]->systemName;
+//		}
 		echo json_encode($data);
 	}
 }

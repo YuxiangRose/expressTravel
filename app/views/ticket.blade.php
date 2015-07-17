@@ -81,7 +81,7 @@
             if(data.length>1){
               $.each(data,function(index,item){
                 $("#text-field").append("<h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div>");
-                searchNext(item['orderOfDay'],item['dateOfFile']);
+//                searchNext(item['orderOfDay'],item['dateOfFile']);
               });
               
               $( "#text-field" ).accordion( "destroy" );
@@ -94,7 +94,7 @@
                 $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>"+"<script>");
                 $('.btn-prev').button( "enable" );
                 $('.btn-next').button( "enable" );
-                searchNext(item['orderOfDay'],item['dateOfFile']);
+                searchNext(item['systemName'],item['ticketNumber']);
               });
             }
             $("input[name='ticketNumber']").val('');
@@ -127,9 +127,9 @@
      * Using orderOfDay to find the next ticket
      * After last orderOfDay is reached and this function is invoked, "Reached MAX record, Total records for the day: " will be printed
      * */
-    function searchNext(orderOfDay,dateOfFile){
-      var orderOfDay = Number(orderOfDay);  //Converting orderOfDay to Number because it is a string in the database
-      var dateOfFile = dateOfFile;
+    function searchNext(systemName, ticketNumber){
+      var systemName = systemName;
+      var ticketNumber = Number(ticketNumber);
 
       // Making sure this function doesn't get called twice
       if( !this.wasRun ){
@@ -139,15 +139,14 @@
             method: "post",
             url: "/next",
             dataType: "json",
-            data: {orderOfDay:orderOfDay, dateOfFile: dateOfFile},
+            data: {systemName: systemName, ticketNumber: ticketNumber},
             success: function(data){
               $("#text-field").empty();
               $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
 
-              //Run the function again if orderOfDay's value is the same as orderOfDay value passed back
-              if((orderOfDay + 1) == data['orderOfDay']){
-                orderOfDay++;
-                searchNext(orderOfDay);
+              if((ticketNumber + 1) == data['ticketNumber']){
+                ticketNumber++;
+                searchNext(ticketNumber, data['systemName']);
               }
             }
           });
