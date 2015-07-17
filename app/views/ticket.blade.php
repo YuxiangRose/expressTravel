@@ -52,6 +52,7 @@
 
     $("button,input[type=submit]").button()
 
+    /* Search Record */
     $(".btn-search").click(function(event) {
       event.preventDefault();
       var noError = true; 
@@ -83,19 +84,23 @@
                 $("#text-field").append("<h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div>");
 //                searchNext(item['orderOfDay'],item['dateOfFile']);
               });
-              
+
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                 collapsible: true
               });
-              
+
             }else{
               $.each(data,function(index,item){
                 $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>"+"<script>");
-                $('.btn-prev').button( "enable" );
-                $('.btn-next').button( "enable" );
                 searchNext(item['systemName'],item['ticketNumber']);
+                if(item['content'].indexOf('S') != 0){
+                  $('.btn-prev').button( "enable" );
+                  $('.btn-next').button( "enable" );
+                }
               });
+
+
             }
             $("input[name='ticketNumber']").val('');
             $("input[name='passengerName']").val('');
@@ -143,11 +148,15 @@
             success: function(data){
               $("#text-field").empty();
               $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
-
-              if((ticketNumber + 1) == data['ticketNumber']){
-                ticketNumber++;
-                searchNext(ticketNumber, data['systemName']);
+              if(data['content'].indexOf('>') > 0){
+                if((ticketNumber + 1) == data['ticketNumber']){
+                  ticketNumber++;
+                  searchNext(ticketNumber, data['systemName']);
+                }
+              }else{
+                $('.btn-next').button( "disable" );
               }
+
             }
           });
         });  //end btn-next
