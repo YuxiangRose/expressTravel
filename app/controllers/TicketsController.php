@@ -72,17 +72,22 @@ class TicketsController extends BaseController {
 		echo json_encode($data);
 	}
 
+
+	/**
+	 * function search()
+	 * Using either ticketNumber, passengerName or rloc to search up the tickets
+     */
 	public function search(){
 		$data = array();
 		/* Check if ticket number entered is not null and is number */
-		if(($_POST['ticketNumber'] != null) || (is_numeric($_POST['ticketNumber']))){
+		if(($_POST['ticketNumber'] != null) && (is_numeric($_POST['ticketNumber']))){
 			$ticketNumber = trim($_POST['ticketNumber']);
 		}else{
 			$ticketNumber = "";
 		}
 
 		/* Parse the passenger name by space or slash */
-		if (($_POST['passengerName'] != null)) {
+		if (($_POST['passengerName'] != null) || empty(($_POST['passengerName']))) {
 			$passengerName = strtoupper(trim($_POST['passengerName']));
 			if(strpos($passengerName,'/')){
 				$parsePassengerName = explode("/", $passengerName);
@@ -136,41 +141,49 @@ class TicketsController extends BaseController {
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again."; 	
+			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
 		echo json_encode($data);
-	}
+	}  //End search function
 
 	/**
 	 * function next()
-	 * Searching the database to find the dateOfFile (2015-06-25) and the orderOfDay
-	 * Check the maximum orderOfDay there are on the same date
-	 * Passes content, orderOfDay and maxOrderNumber to the view (ticket.blade.php)
+	 * Searching the database to find the same systemName
+	 * Check the max of all ticketNumber and then determine the next ticketNumber
+	 * Passes content, ticketNumber and systemName to the view (ticket.blade.php)
 	 */
 	public function next(){
 		$data = array();
 		$systemName = $_POST['systemName'];
 		$nextTicketNumber = $_POST['ticketNumber'] + 1;
 
+		//used to get the nextTicketNumber if there is a sequential nextTicketNumber
 		$model = Document::where('systemName', '=', $systemName)
 							->where('ticketNumber', '=', ($nextTicketNumber))->get();
 
-		/* Finds the largest ticket number */
-//		$allTicketNumber = array();
-//		foreach($model as $key => $value){
-//			$allTicketNumber[] = $value->ticketNumber;
-//		}
-//		$maxTicketNumber = max($allTicketNumber);
-//		$nextTickerNumber = $ticketNumber + 1;
-//
-//
-//		if($nextTickerNumber > $maxTicketNumber){
-//			$data['content'] = '<p>Reached MAX record<br>End of record</p>';
-//		}else{
+		if(sizeof($model) == 0){
+			$data['content'] = 'Reached end of record';
+			return json_encode($data);
+		}
+		//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
+		$getAllModel = Document::where('systemName', '=', $systemName)->get();
+
+		$allTicketNumber = [];
+		if(sizeof($getAllModel) > 0){
+			foreach($getAllModel as $key => $value){
+				$allTicketNumber[] = $value->ticketNumber;
+			}
+		}
+		$maxTicketNumber = max($allTicketNumber);
+
+		if($nextTicketNumber > $maxTicketNumber){
+			$data['content'] = 'Reached end of record';
+		}else{
 			$data['content'] = $model[0]->fileContent;
 			$data['ticketNumber'] = $model[0]->ticketNumber;
 			$data['systemName'] = $model[0]->systemName;
-//		}
+		}
+
 		echo json_encode($data);
 	}
 }

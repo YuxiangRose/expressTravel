@@ -52,9 +52,14 @@
 
     $("button,input[type=submit]").button()
 
+    /* Two variables created to save the ticketNumber / systemName passed here from PHP when search is clicked */
+    var globalTicketNumber;
+    var globalSystemName;
+
+    /* Search Record */
     $(".btn-search").click(function(event) {
       event.preventDefault();
-      var noError = true; 
+      var noError = true;
 
       var ticketNumber = $.trim($("input[name='ticketNumber']").val());
       var passengerName = $.trim($("input[name='passengerName']").val());
@@ -83,19 +88,24 @@
                 $("#text-field").append("<h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div>");
 //                searchNext(item['orderOfDay'],item['dateOfFile']);
               });
-              
+
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                 collapsible: true
               });
-              
+
             }else{
               $.each(data,function(index,item){
                 $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>"+"<script>");
-                $('.btn-prev').button( "enable" );
-                $('.btn-next').button( "enable" );
-                searchNext(item['systemName'],item['ticketNumber']);
+                globalSystemName = item['systemName'];
+                globalTicketNumber = item['ticketNumber'];
+                if(item['content'].indexOf('S') != 0){
+                  $('.btn-prev').button( "enable" );
+                  $('.btn-next').button( "enable" );
+                }
               });
+
+
             }
             $("input[name='ticketNumber']").val('');
             $("input[name='passengerName']").val('');
@@ -105,7 +115,12 @@
       }
     });  //end btn-search
 
-
+    /*
+     * Update Button
+     * This updates the documents in files directory
+     * Converts the documents into database properly and saves the documents into done directory
+     * Files cannot be converted will stay in the files directory
+     * */
     $(".btn-update").click(function(event) {
       event.preventDefault();
       $.ajax({
@@ -122,38 +137,35 @@
       });
     });   //end btn-update
 
+
     /*
-     * searchNext()
-     * Using orderOfDay to find the next ticket
-     * After last orderOfDay is reached and this function is invoked, "Reached MAX record, Total records for the day: " will be printed
+     * Next Button
+     * This will find the next ticketNumber with increment of 1.
+     * (Still need to try figure out how to do next ticketNumber with the same systemName in case the ticketNumber isn't always increment of 1)
      * */
-    function searchNext(systemName, ticketNumber){
-      var systemName = systemName;
-      var ticketNumber = Number(ticketNumber);
-
-      // Making sure this function doesn't get called twice
-      if( !this.wasRun ){
-        $(".btn-next").click(function(event) {
-          event.preventDefault();
-          $.ajax({
-            method: "post",
-            url: "/next",
-            dataType: "json",
-            data: {systemName: systemName, ticketNumber: ticketNumber},
-            success: function(data){
-              $("#text-field").empty();
-              $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
-
-              if((ticketNumber + 1) == data['ticketNumber']){
-                ticketNumber++;
-                searchNext(ticketNumber, data['systemName']);
-              }
+    $(".btn-next").click(function(event) {
+      event.preventDefault();
+      var systemName = globalSystemName;
+      var ticketNumber = Number(globalTicketNumber);
+      $.ajax({
+        method: "post",
+        url: "/next",
+        dataType: "json",
+        data: {systemName: systemName, ticketNumber: ticketNumber},
+        success: function(data){
+          $("#text-field").empty();
+          $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
+          if(data['content'].indexOf('>') > 0){
+            if((ticketNumber + 1) == data['ticketNumber']){
+              globalTicketNumber++;
+              console.log(ticketNumber);
             }
-          });
-        });  //end btn-next
-      }
-      this.wasRun = true;
-    }  //end searchNext()
+          }else{
+            $('.btn-next').button( "disable" );
+          }
+        }
+      });
+    });  //end btn-next
 
 
   }); //end document ready
