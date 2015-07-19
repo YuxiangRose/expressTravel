@@ -155,35 +155,37 @@ class TicketsController extends BaseController {
 	public function next(){
 		$data = array();
 		$systemName = $_POST['systemName'];
-		$nextTicketNumber = $_POST['ticketNumber'] + 1;
+		$ticketNumber = $_POST['ticketNumber'];
 
-		//used to get the nextTicketNumber if there is a sequential nextTicketNumber
-		$model = Document::where('systemName', '=', $systemName)
-							->where('ticketNumber', '=', ($nextTicketNumber))->get();
-
-		if(sizeof($model) == 0){
-			$data['content'] = 'Reached end of record';
-			return json_encode($data);
-		}
 		//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
-		$getAllModel = Document::where('systemName', '=', $systemName)->get();
+		$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
 
-		$allTicketNumber = [];
+		// $index variable to store the location of the current ticketNumber
+		// Using this variable to locate the next ticketNumber in row
+		$index = 0;
+
+		$maxIndex = [];  //Store all index in an array
+
 		if(sizeof($getAllModel) > 0){
 			foreach($getAllModel as $key => $value){
-				$allTicketNumber[] = $value->ticketNumber;
+				if(($value->ticketNumber) == $ticketNumber){
+					$index = $key;
+				}
+				$maxIndex[] = $key;
 			}
 		}
-		$maxTicketNumber = max($allTicketNumber);
 
-		if($nextTicketNumber > $maxTicketNumber){
-			$data['content'] = 'Reached end of record';
-		}else{
-			$data['content'] = $model[0]->fileContent;
-			$data['ticketNumber'] = $model[0]->ticketNumber;
-			$data['systemName'] = $model[0]->systemName;
+		$maxIndex = max($maxIndex);  //Check the max index
+
+		$nextIndex = $index + 1;  //Next index means next row
+
+		if($nextIndex == $maxIndex){
+			$data['disable'] = 'disable';
 		}
-
-		echo json_encode($data);
+			$nextModel = $getAllModel[$nextIndex];
+			$data['content'] = $nextModel->fileContent;
+			$data['ticketNumber'] = $nextModel->ticketNumber;
+			$data['systemName'] = $nextModel->systemName;
+		return json_encode($data);
 	}
 }
