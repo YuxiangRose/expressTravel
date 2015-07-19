@@ -107,21 +107,21 @@ class TicketsController extends BaseController {
 		}else{
 			$rloc = "";
 		}
-
-		if(strlen($ticketNumber) == 10 ){
-			$model = Document::where('ticketNumber', '=', $ticketNumber)->get();
-		}elseif(strlen($rloc) == 6 ){
-			$model = Document::where('rloc', '=', $rloc)->get();
-		}else{
-			$model = Document::where('paxName', 'LIKE', '%'.$first.'%')
-				->where('paxName','LIKE','%'.$mid.'%')
-				->where('paxName','LIKE','%'.$last.'%')
-				->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%')
-				->where('rloc', 'LIKE', '%'.$rloc.'%')
-				->get();
-		}
-		//$model = Document::where('tickeNumebr', '=', $ticketNumber)->first();
 		
+		$query = Document::query();
+		if($ticketNumber){
+			$query = $query->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%');
+		}
+		if($rloc){
+			$query = $query->where('rloc', 'LIKE', '%'.$rloc.'%');
+		}
+		if($passengerName){
+			$query = $query->where('paxName', 'LIKE', '%'.$first.'%')
+						   ->where('paxName','LIKE','%'.$mid.'%')
+						   ->where('paxName','LIKE','%'.$last.'%');
+		}
+		$model = $query->get();
+
 		$index = 0;
 		if(sizeof($model)>0){
 			foreach ($model as $key => $value) {
