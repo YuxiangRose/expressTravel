@@ -107,15 +107,15 @@ class TicketsController extends BaseController {
 		}else{
 			$rloc = "";
 		}
-		
+
 		$query = Document::query();
-		if($ticketNumber){
+		if($ticketNumber != null){
 			$query = $query->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%');
 		}
-		if($rloc){
+		if($rloc != null){
 			$query = $query->where('rloc', 'LIKE', '%'.$rloc.'%');
 		}
-		if($passengerName){
+		if($passengerName != null){
 			$query = $query->where('paxName', 'LIKE', '%'.$first.'%')
 						   ->where('paxName','LIKE','%'.$mid.'%')
 						   ->where('paxName','LIKE','%'.$last.'%');
