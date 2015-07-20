@@ -122,8 +122,48 @@ class TicketsController extends BaseController {
 		}
 		$model = $query->get();
 
+
 		$index = 0;
-		if(sizeof($model)>0){
+		/* If model only has one record, check if it's the first or last record within the same systemName to determine which prev/next button to enable or disable
+		 * If more than one model, next-record/prev-record button will be enabled
+		 */
+		if(sizeof($model) == 1){
+			$systemName = $model[0]->systemName;  //Gets the systemName
+			//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
+			$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+
+			// $index variable to store the location of the current ticketNumber
+			// Using this variable to locate the next ticketNumber in row
+			$index = 0;
+			$allIndex = [];
+			if(sizeof($getAllModel) > 0){
+				foreach($getAllModel as $key => $value){
+					if(($value->ticketNumber) == $ticketNumber){
+						$index = $key;
+					}
+					$allIndex[] = $key;
+				}
+			}
+			$maxIndex = max($allIndex);  //Check the max index
+			$minIndex = min($allIndex);  //Check the min index usually 0
+
+			if($minIndex == $maxIndex){
+				$data[$index]['disable-both'] = 'disable-both';
+			}else if($index == $maxIndex){
+				$data[$index]['disable-next'] = 'disable-next';
+			}else if($index == $minIndex){
+				$data[$index]['disable-prev'] = 'disable-prev';
+			}
+
+			$data['index']= $index;
+			$data[$index]['content']=$model[0]['fileContent'];
+			$data[$index]['dateOfFile']=$model[0]['dateOfFile'];
+			$data[$index]['paxName']=$model[0]['paxName'];
+			$data[$index]['airlineName']=$model[0]['airlineName'];
+			$data[$index]['systemName']=$model[0]['systemName'];
+			$data[$index]['ticketNumber']=$model[0]['ticketNumber'];
+
+		}else if(sizeof($model)>1){
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
 				//if($document){
@@ -200,7 +240,7 @@ class TicketsController extends BaseController {
 
 		$maxIndex = max($allIndex);  //Check the max index
 		$minIndex = min($allIndex);  //Check the min index usually 0
-		$nextIndex = $index + $nextRow;  //Next index means next row or previous row
+		$nextIndex = $index + $nextRow;  //Next index = next row or previous row
 		
 		if($nextIndex == $maxIndex || $nextIndex == $minIndex){
 			$data['disable'] = 'disable';
