@@ -30,6 +30,8 @@
       <button class="btn-update">Update</button>
       <button class="btn-prev" name="previous">PREV</button>
       <button class="btn-next" name="next">NEXT</button>
+      <button class="btn-next-record" name="nextRecord">Next Record</button>
+      <button class="btn-prev-record" name="prevRecord">Prev Record</button>
     </div>
     <input type="hidden" name="ticketHolder" value="">
   </div>
@@ -42,9 +44,12 @@
 
 <script>
   $(document).ready(function() {
+    var maxIndexForDoc;
     $( "#text-field" ).accordion();
     $('.btn-prev').attr('disabled','disabled');
     $('.btn-next').attr('disabled','disabled');
+    $('.btn-prev-record').attr('disabled','disabled');
+    $('.btn-next-record').attr('disabled','disabled');
 
     setTimeout(function() {
         $('.update-info').slideUp('slow');
@@ -84,16 +89,19 @@
             rloc:rloc},
           success: function(data){
             if(data.length>1){
+              maxIndexForDoc = data.length -1;
               $.each(data,function(index,item){
-                $("#text-field").append("<h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div>");
-//                searchNext(item['orderOfDay'],item['dateOfFile']);
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div></div>");
               });
 
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
-                collapsible: true
-              });
-
+                collapsible: false,
+                header: "> div > h3"
+              })
+              
+              $('.btn-prev-record').button( "enable" );
+              $('.btn-next-record').button( "enable" );
             }else{
               $.each(data,function(index,item){
                 $("#text-field").append("<div class='text-block-single'>"+item['content']+"</div>"+"<script>");
@@ -167,6 +175,32 @@
       });
     });  //end btn-next
 
+    $(".btn-next-record").click(function(event) {
+      /* Act on the event */
+      event.preventDefault();
+      var section = $(".group:first");
+      $(".group:first").find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
+      var content = $(".group:first").html();
+      $("div").remove(".group:first");
+      $("#text-field").append("<div class='group'>"+content+"<div>");
+      $("#text-field").accordion("refresh");
+
+    });
+
+    $(".btn-prev-record").click(function(event) {
+      /* Act on the event */
+      event.preventDefault();
+      var section = $(".group:last");
+      $('.group:first').find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
+      var content =  $(".group:last").html();
+      $("div").remove(".group:last");
+      var rest = $("#text-field").html();
+      $("#text-field").empty();
+      $("#text-field").append("<div class='group'>"+content+"<div>");
+      $("#text-field").append(rest);
+      $("#text-field").accordion("refresh");
+
+    });
 
   }); //end document ready
 </script>
