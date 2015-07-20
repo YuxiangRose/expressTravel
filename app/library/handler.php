@@ -179,13 +179,6 @@
             $date = new DateTime($dateString);
             $this->setDateOfFile($date->format('Y-m-d'));
 
-            //parse file content into whole string;
-            $fileContent = "<pre>"; 
-            $fileContent .= file_get_contents($path.$fileName);
-            $fileContent .= "</pre>";
-
-            $this->setFileContent($fileContent);
-
             //parse file to get all the details
             $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
             while(!feof($myfile))
@@ -249,6 +242,15 @@
                 }
             }
 
+
+            //parse file content into whole string;
+            $fileContent = "<pre>"; 
+            $fileContent .= file_get_contents($path.$fileName);
+            $fileContent .= "</pre>";
+
+            $fileContent = str_replace($this->getTicketNumber(), "<span class='ticket-highlight'>".$this->getTicketNumber()."</span>", $fileContent);
+            $this->setFileContent($fileContent);
+           
             $this->setTicketsType("Ticket");
         }
 
@@ -270,13 +272,6 @@
 
             $date = new DateTime($dateString);
             $this->setDateOfFile($date->format('Y-m-d'));
-
-            //parse file content into whole string;
-            $fileContent = "<pre>"; 
-            $fileContent .= file_get_contents($path.$fileName);
-            $fileContent .= "</pre>";
-
-            $this->setFileContent($fileContent);
 
             //parse file to get all the details
             $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
@@ -342,6 +337,13 @@
             die;
             foreach ($fileLines as $key => $line) {    
             }
+
+            //parse file content into whole string;
+            $fileContent = "<pre>"; 
+            $fileContent .= file_get_contents($path.$fileName);
+            $fileContent .= "</pre>";
+
+            $this->setFileContent($fileContent);
 
             $this->setRloc("Unknown");
             $this->setTicketsType("Refund");

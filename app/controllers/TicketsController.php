@@ -32,7 +32,7 @@ class TicketsController extends BaseController {
 			if($value != "." && $value != ".."){
 				$handler = new handler($dir,$value);
 				//var_dump($handler);
-				/*if($handler->getFileType() != NULL){
+				if($handler->getFileType() != NULL){
 					try {
 			            $document = Document::create(array(
 			                'path' 			=> $handler->getPath(),
@@ -57,7 +57,7 @@ class TicketsController extends BaseController {
 			            $boolean = false;
 			            echo $e;
 			        }
-		        }*/				
+		        }				
 			}
 		}
 

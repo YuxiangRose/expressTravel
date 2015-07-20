@@ -19,3 +19,4 @@ input[type=submit]:hover {cursor: pointer;}
 	#text-field .text-block-single{background: none repeat scroll 0 0 white; margin: 0 70px 10px 0;padding: 1px 0 0 120px; box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;}
 	#text-field .block-hearder{margin: 0; width: 799px;}
 	#text-field .block-hearder span{margin: 0 0 0 30px;}
+.ticket-highlight{background-color: yellow;}

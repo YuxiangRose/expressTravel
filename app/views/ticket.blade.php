@@ -44,7 +44,6 @@
 
 <script>
   $(document).ready(function() {
-    var maxIndexForDoc;
     $( "#text-field" ).accordion();
     $('.btn-prev').attr('disabled','disabled');
     $('.btn-next').attr('disabled','disabled');
@@ -63,6 +62,11 @@
 
     /* Search Record */
     $(".btn-search").click(function(event) {
+      $('.btn-prev').button( "disable" );
+      $('.btn-next').button( "disable" );
+      $('.btn-prev-record').button( "disable" );
+      $('.btn-next-record').button( "disable" );
+
       event.preventDefault();
       var noError = true;
 
