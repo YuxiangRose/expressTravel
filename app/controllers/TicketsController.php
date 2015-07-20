@@ -148,42 +148,67 @@ class TicketsController extends BaseController {
 
 	/**
 	 * function next()
-	 * Searching the database to find the same systemName
-	 * Check the max of all ticketNumber and then determine the next ticketNumber
-	 * Passes content, ticketNumber and systemName to the view (ticket.blade.php)
+	 * Uses the nextRow()
+	 * 1st parameter is 1 because it's used as increment of 1 to the index to find the next row
+	 *
 	 */
 	public function next(){
+		$this->nextRow(1,'max');
+	}
+
+	/**
+	 * function prev()
+	 * uses the nextRow()
+	 * 1st parameter is -1 because it's used as decrement of -1 to the index to find the prev row
+	 */
+	public function prev(){
+		$this->nextRow(-1,'min');
+	}
+
+	/**
+	 * functoin nextRow()
+	 * Used by both next() and prev()
+	 * Search database to find the same systemName
+	 * Sort the search in ticketNumber order which gives the index a sequence
+	 * Use the index to find the next number in row
+	 * Passes content, ticketNumber and systemName to the view (ticket.blade.php)
+	 * @param $nextRow		- increments to find the next / prev row
+	 * @param $checkIndex	- not in use
+	 */
+	public function nextRow($nextRow,$checkIndex){
 		$data = array();
 		$systemName = $_POST['systemName'];
-		$nextTicketNumber = $_POST['ticketNumber'] + 1;
+		$ticketNumber = $_POST['ticketNumber'];
 
-		//used to get the nextTicketNumber if there is a sequential nextTicketNumber
-		$model = Document::where('systemName', '=', $systemName)
-							->where('ticketNumber', '=', ($nextTicketNumber))->get();
-
-		if(sizeof($model) == 0){
-			$data['content'] = 'Reached end of record';
-			return json_encode($data);
-		}
 		//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
-		$getAllModel = Document::where('systemName', '=', $systemName)->get();
+		$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
 
-		$allTicketNumber = [];
+		// $index variable to store the location of the current ticketNumber
+		// Using this variable to locate the next ticketNumber in row
+		$index = 0;
+
+		$allIndex = [];  //Store all index in an array
+
 		if(sizeof($getAllModel) > 0){
 			foreach($getAllModel as $key => $value){
-				$allTicketNumber[] = $value->ticketNumber;
+				if(($value->ticketNumber) == $ticketNumber){
+					$index = $key;
+				}
+				$allIndex[] = $key;
 			}
 		}
-		$maxTicketNumber = max($allTicketNumber);
 
-		if($nextTicketNumber > $maxTicketNumber){
-			$data['content'] = 'Reached end of record';
-		}else{
-			$data['content'] = $model[0]->fileContent;
-			$data['ticketNumber'] = $model[0]->ticketNumber;
-			$data['systemName'] = $model[0]->systemName;
+		$maxIndex = max($allIndex);  //Check the max index
+		$minIndex = min($allIndex);  //Check the min index usually 0
+		$nextIndex = $index + $nextRow;  //Next index means next row or previous row
+		
+		if($nextIndex == $maxIndex || $nextIndex == $minIndex){
+			$data['disable'] = 'disable';
 		}
-
+		$nextModel = $getAllModel[$nextIndex];
+		$data['content'] = $nextModel->fileContent;
+		$data['ticketNumber'] = $nextModel->ticketNumber;
+		$data['systemName'] = $nextModel->systemName;
 		echo json_encode($data);
 	}
 }

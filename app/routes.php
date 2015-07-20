@@ -16,3 +16,4 @@ Route::get('ticket','TicketsController@getIndex');
 Route::get('update','TicketsController@update');
 Route::post('search','TicketsController@search');
 Route::post('next','TicketsController@next');
+Route::post('prev','TicketsController@prev');

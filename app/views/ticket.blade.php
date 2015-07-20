@@ -148,8 +148,7 @@
 
     /*
      * Next Button
-     * This will find the next ticketNumber with increment of 1.
-     * (Still need to try figure out how to do next ticketNumber with the same systemName in case the ticketNumber isn't always increment of 1)
+     * This will find the next ticketNumber in row.
      * */
     $(".btn-next").click(function(event) {
       event.preventDefault();
@@ -163,17 +162,42 @@
         success: function(data){
           $("#text-field").empty();
           $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
-          if(data['content'].indexOf('>') > 0){
-            if((ticketNumber + 1) == data['ticketNumber']){
-              globalTicketNumber++;
-              console.log(ticketNumber);
-            }
-          }else{
+          globalTicketNumber = data['ticketNumber'];
+          $('.btn-prev').button( "enable" );
+          if((data['disable']) == 'disable'){
             $('.btn-next').button( "disable" );
+
           }
         }
       });
     });  //end btn-next
+
+    
+    /*
+     * Previous Button
+     * This will find the next ticketNumber in row.
+     * */
+    $(".btn-prev").click(function(event) {
+      event.preventDefault();
+      var systemName = globalSystemName;
+      var ticketNumber = Number(globalTicketNumber);
+      $.ajax({
+        method: "post",
+        url: "/prev",
+        dataType: "json",
+        data: {systemName: systemName, ticketNumber: ticketNumber},
+        success: function(data){
+          $("#text-field").empty();
+          $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
+          globalTicketNumber = data['ticketNumber'];
+          $('.btn-next').button( "enable" );
+          if((data['disable']) == 'disable'){
+            $('.btn-prev').button( "disable" );
+
+          }
+        }
+      });
+    });  //end btn-prev
 
     $(".btn-next-record").click(function(event) {
       /* Act on the event */
@@ -201,7 +225,6 @@
       $("#text-field").accordion("refresh");
 
     });
-
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}
