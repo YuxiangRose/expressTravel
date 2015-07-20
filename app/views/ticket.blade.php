@@ -155,12 +155,38 @@
           $("#text-field").empty();
           $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
           globalTicketNumber = data['ticketNumber'];
+          console.log(globalTicketNumber);
           if((data['disable']) == 'disable'){
             $('.btn-next').button( "disable" );
           }
         }
       });
     });  //end btn-next
+
+    /*
+     * Previous Button
+     * This will find the next ticketNumber in row.
+     * */
+    $(".btn-prev").click(function(event) {
+      event.preventDefault();
+      var systemName = globalSystemName;
+      var ticketNumber = Number(globalTicketNumber);
+      $.ajax({
+        method: "post",
+        url: "/prev",
+        dataType: "json",
+        data: {systemName: systemName, ticketNumber: ticketNumber},
+        success: function(data){
+          $("#text-field").empty();
+          $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
+          globalTicketNumber = data['ticketNumber'];
+          console.log(globalTicketNumber);
+          if((data['disable']) == 'disable'){
+            $('.btn-prev').button( "disable" );
+          }
+        }
+      });
+    });  //end btn-prev
 
 
   }); //end document ready

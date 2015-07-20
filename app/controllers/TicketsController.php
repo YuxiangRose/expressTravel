@@ -153,6 +153,14 @@ class TicketsController extends BaseController {
 	 * Passes content, ticketNumber and systemName to the view (ticket.blade.php)
 	 */
 	public function next(){
+		$this->nextRow(1,'max');
+	}
+
+	public function prev(){
+		$this->nextRow(-1,'min');
+	}
+
+	public function nextRow($nextRow,$checkIndex){
 		$data = array();
 		$systemName = $_POST['systemName'];
 		$ticketNumber = $_POST['ticketNumber'];
@@ -164,28 +172,28 @@ class TicketsController extends BaseController {
 		// Using this variable to locate the next ticketNumber in row
 		$index = 0;
 
-		$maxIndex = [];  //Store all index in an array
+		$allIndex = [];  //Store all index in an array
 
 		if(sizeof($getAllModel) > 0){
 			foreach($getAllModel as $key => $value){
 				if(($value->ticketNumber) == $ticketNumber){
 					$index = $key;
 				}
-				$maxIndex[] = $key;
+				$allIndex[] = $key;
 			}
 		}
 
-		$maxIndex = max($maxIndex);  //Check the max index
-
-		$nextIndex = $index + 1;  //Next index means next row
-
-		if($nextIndex == $maxIndex){
+		$maxIndex = max($allIndex);  //Check the max index
+		$minIndex = min($allIndex);  //Check the min index usually 0
+		$nextIndex = $index + $nextRow;  //Next index means next row or previous row
+		
+		if($nextIndex == $maxIndex || $nextIndex == $minIndex){
 			$data['disable'] = 'disable';
 		}
-			$nextModel = $getAllModel[$nextIndex];
-			$data['content'] = $nextModel->fileContent;
-			$data['ticketNumber'] = $nextModel->ticketNumber;
-			$data['systemName'] = $nextModel->systemName;
-		return json_encode($data);
+		$nextModel = $getAllModel[$nextIndex];
+		$data['content'] = $nextModel->fileContent;
+		$data['ticketNumber'] = $nextModel->ticketNumber;
+		$data['systemName'] = $nextModel->systemName;
+		echo json_encode($data);
 	}
 }
