@@ -155,9 +155,10 @@
           $("#text-field").empty();
           $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
           globalTicketNumber = data['ticketNumber'];
-          console.log(globalTicketNumber);
+          $('.btn-prev').button( "enable" );
           if((data['disable']) == 'disable'){
             $('.btn-next').button( "disable" );
+
           }
         }
       });
@@ -180,9 +181,10 @@
           $("#text-field").empty();
           $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
           globalTicketNumber = data['ticketNumber'];
-          console.log(globalTicketNumber);
+          $('.btn-next').button( "enable" );
           if((data['disable']) == 'disable'){
             $('.btn-prev').button( "disable" );
+
           }
         }
       });
