@@ -106,14 +106,10 @@
                $('.btn-prev-record').button( "enable" );
               $('.btn-next-record').button( "enable" );
             }else{
-                //foreach is not used here because it'll pass by lots of queries including those won't be shown and when testing to see if disables are passed, it'll all be false
-                var index = data['index'];  //variable to store the index in the query, only one query, only one index is needed
-                $("#text-field").append("<div class='text-block-single'>"+data[index]['content']+"</div>"+"<script>");
-
-                //Passes these two variables to global for the btn-next and btn-prev to use
-                globalSystemName = data[index]['systemName'];
-                globalTicketNumber = data[index]['ticketNumber'];
-
+              $.each(data,function(index,item) {
+                $("#text-field").append("<div class='text-block-single'>" + item['content'] + "</div>" + "<script>");
+                globalSystemName = item['systemName'];
+                globalTicketNumber = item['ticketNumber'];
                 //Enables all buttons first and use the codes below to check which one should be disabled
                 $('.btn-prev').button( "enable" );
                 $('.btn-next').button( "enable" );
@@ -122,14 +118,16 @@
                 //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
                 //Disable-next - The record pulled has reached the end of the record
                 //Disable-prev - The record pulled has reached the earliest of the record
-                if(data[index]['disable-both'] == 'disable-both'){
+                if(item['disable-both'] == 'disable-both'){
                   $('.btn-prev').button( "disable" );
                   $('.btn-next').button( "disable" );
-                }else if(data[index]['disable-next']  == 'disable-next'){
+                }else if(item['disable-next']  == 'disable-next'){
                   $('.btn-next').button( "disable" );
-                }else if(data[index]['disable-prev']  == 'disable-prev'){
+                }else if(item['disable-prev']  == 'disable-prev'){
                   $('.btn-prev').button( "disable" );
                 }
+              });
+
             }
 
             $("input[name='ticketNumber']").val('');

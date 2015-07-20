@@ -155,7 +155,6 @@ class TicketsController extends BaseController {
 				$data[$index]['disable-prev'] = 'disable-prev';
 			}
 
-			$data['index']= $index;
 			$data[$index]['content']=$model[0]['fileContent'];
 			$data[$index]['dateOfFile']=$model[0]['dateOfFile'];
 			$data[$index]['paxName']=$model[0]['paxName'];
