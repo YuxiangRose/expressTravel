@@ -17,8 +17,9 @@ input[type=submit]:hover {cursor: pointer;}
 .form-field{width: 500px; float:left; margin-bottom: 5px;}
 .button-field{min-width:500px; float:left; margin-bottom: 5px;}
 #text-field{width: 870px; min-height: 700px; margin-top: 15px; padding: 10px 0 0 64px;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;float: left;}
-	#text-field .text-block{background: none repeat scroll 0 0 white; margin: 0 70px 10px 0;padding: 0 0 0 120px;}
+	#text-field .text-block{background: none repeat scroll 0 0 white; min-height: 440px; margin: 0 70px 10px 0;padding: 0 0 0 120px; height: auto;}
 	#text-field .text-block-single{background: none repeat scroll 0 0 white; margin: 0 70px 10px 0;padding: 1px 0 0 120px; box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;}
 	#text-field .block-hearder{margin: 0; width: 799px;}
 	#text-field .block-hearder span{margin: 0 0 0 30px;}
+	#text-field .print-btn{float: right; margin: -10px 70px 0 0;}
 .ticket-highlight{background-color: yellow;}
