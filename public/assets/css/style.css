@@ -12,6 +12,8 @@ input[type=submit]:hover {cursor: pointer;}
 	.sub-container .ticket-field{width: 200px; float: right;}
 	.sub-container .name-field{width: 200px; float: right;}
 	.sub-container .rloc-field{width: 200px; float: right;}
+	.sub-container .date-from-field{width: 200px; float: right;}
+	.sub-container .date-to-field{width: 200px; float: right;}
 .form-field{width: 500px; float:left; margin-bottom: 5px;}
 .button-field{min-width:500px; float:left; margin-bottom: 5px;}
 #text-field{width: 870px; min-height: 700px; margin-top: 15px; padding: 10px 0 0 64px;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;float: left;}

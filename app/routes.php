@@ -13,7 +13,10 @@
 //print App::environment();
 Route::get('/', 'HomeController@showWelcome');
 Route::get('ticket','TicketsController@getIndex');
+Route::get('date','TicketsController@getDate');
+
 Route::get('update','TicketsController@update');
+
 Route::post('search','TicketsController@search');
 Route::post('next','TicketsController@next');
 Route::post('prev','TicketsController@prev');

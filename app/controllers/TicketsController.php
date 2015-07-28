@@ -22,6 +22,11 @@ class TicketsController extends BaseController {
 		//$this->fileConvertAndUpdate();
 	}
 
+	public function getDate(){
+		return View::make('date');
+	}
+
+
 	public function fileConvertAndUpdate(){
 
 		$dir = "../files/";

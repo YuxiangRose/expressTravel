@@ -1,7 +1,9 @@
 @extends('layouts.master')
 @section('css')
 <style>
+
 </style>
+<script></script>
 @stop
 
 @section('contents')
@@ -25,6 +27,15 @@
       <label>RLOC : </label>
       <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
     </div>
+    <div class="form-field">
+      <label for="from">Date From</label>
+      <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
+    </div>
+    <div class="form-field">
+      <label for="to">Date To</label>
+      <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
+    </div>
+
     <div class="button-field">
       <input type="submit" class="btn-search"value="Search">
       <button class="btn-update">Update</button>
@@ -32,18 +43,38 @@
       <button class="btn-next" name="next">NEXT</button>
       <button class="btn-next-record" name="nextRecord">Next Record</button>
       <button class="btn-prev-record" name="prevRecord">Prev Record</button>
-    </div>
+    </div> <!---end button-field -->
+
     <input type="hidden" name="ticketHolder" value="">
-  </div>
+  </div><!--end sub-container -->
+
   <div id="text-field">
   </div>
-</div>
+
+</div><!--end container -->
 @stop
 
 @section('js')
-
 <script>
   $(document).ready(function() {
+    $( "#date-from-field" ).datepicker({
+      defaultDate: "+1w",
+//        changeMonth: true,
+//        numberOfMonths: 2,
+      onClose: function( selectedDate ) {
+        $( "#date-to-field" ).datepicker( "option", "minDate", selectedDate );
+      }
+    });
+    $( "#date-to-field" ).datepicker({
+      defaultDate: "+1w",
+//        changeMonth: true,
+//        numberOfMonths: 2,
+      onClose: function( selectedDate ) {
+        $( "#date-from-field" ).datepicker( "option", "maxDate", selectedDate );
+      }
+    });
+
+
     $( "#text-field" ).accordion();
     $('.btn-prev').attr('disabled','disabled');
     $('.btn-next').attr('disabled','disabled');
