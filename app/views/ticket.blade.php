@@ -95,19 +95,24 @@
             if(data.length>1){
               maxIndexForDoc = data.length -1;
               $.each(data,function(index,item){
-                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div></div>");
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
               });
 
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
-                collapsible: false,
+                collapsible: true,
                 header: "> div > h3"
               })
-               $('.btn-prev-record').button( "enable" );
+              $('.btn-prev-record').button( "enable" );
               $('.btn-next-record').button( "enable" );
             }else{
               $.each(data,function(index,item) {
-                $("#text-field").append("<div class='text-block-single'>" + item['content'] + "</div>" + "<script>");
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+                $( "#text-field" ).accordion( "destroy" );
+                $( "#text-field" ).accordion({
+                  collapsible: true,
+                  header: "> div > h3"
+                })
                 globalSystemName = item['systemName'];
                 globalTicketNumber = item['ticketNumber'];
                 //Enables all buttons first and use the codes below to check which one should be disabled
