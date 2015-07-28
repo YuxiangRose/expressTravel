@@ -133,7 +133,7 @@
               $( "#text-field" ).accordion({
                 collapsible: true,
                 header: "> div > h3"
-              })
+              });
               $('.btn-prev-record').button( "enable" );
               $('.btn-next-record').button( "enable" );
             }else{
@@ -143,7 +143,7 @@
                 $( "#text-field" ).accordion({
                   collapsible: true,
                   header: "> div > h3"
-                })
+                });
                 globalSystemName = item['systemName'];
                 globalTicketNumber = item['ticketNumber'];
                 //Enables all buttons first and use the codes below to check which one should be disabled
@@ -210,15 +210,9 @@
         url: "/next",
         dataType: "json",
         data: {systemName: systemName, ticketNumber: ticketNumber},
-        success: function(data){
-          $("#text-field").empty();
-          $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
-          globalTicketNumber = data['ticketNumber'];
-          $('.btn-prev').button( "enable" );
-          if((data['disable']) == 'disable'){
-            $('.btn-next').button( "disable" );
-
-          }
+        success: function (data) {
+          console.log(data);
+            appendDataPrevNext(data, 'next');
         }
       });
     });  //end btn-next
@@ -238,17 +232,42 @@
         dataType: "json",
         data: {systemName: systemName, ticketNumber: ticketNumber},
         success: function(data){
-          $("#text-field").empty();
-          $("#text-field").append("<div class='text-block-single'>"+data['content']+"</div>");
-          globalTicketNumber = data['ticketNumber'];
-          $('.btn-next').button( "enable" );
-          if((data['disable']) == 'disable'){
-            $('.btn-prev').button( "disable" );
-
-          }
+          appendDataPrevNext(data, 'prev');
         }
       });
     });  //end btn-prev
+
+    /*
+     * For the use of next / previous button
+     * Both buttons appends the data in the same way using jQuery UI's accordion
+     * 1st parameter passes the data which is passed back from PHP
+     * 2nd parameter defines if the function is used for next / previous button to know which button to be disabled / enabled when needed
+     * */
+    function appendDataPrevNext(data, pn){
+      $("#text-field").empty();
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + data['dateOfFile'] + "</span><span>" + data['paxName'] + "</span><span>" + data['airlineName'] + "</span></h3><div class='text-block'>" + data['content'] + "<button class='print-btn'>Print</button></div></div>");
+      $("#text-field").accordion("destroy");
+      $("#text-field").accordion({
+        collapsible: true,
+        header: "> div > h3"
+      });
+
+      globalTicketNumber = data['ticketNumber'];
+
+      if(pn == 'next'){
+        $('.btn-prev').button("enable");
+        if ((data['disable']) == 'disable') {
+          $('.btn-next').button("disable");
+        }
+      }
+
+      if(pn == 'prev'){
+        $('.btn-next').button( "enable" );
+        if((data['disable']) == 'disable'){
+          $('.btn-prev').button( "disable" );
+        }
+      }
+    }
 
     $(".btn-next-record").click(function(event) {
       /* Act on the event */

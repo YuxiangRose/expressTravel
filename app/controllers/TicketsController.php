@@ -253,6 +253,10 @@ class TicketsController extends BaseController {
 		$data['content'] = $nextModel->fileContent;
 		$data['ticketNumber'] = $nextModel->ticketNumber;
 		$data['systemName'] = $nextModel->systemName;
+		$data['dateOfFile'] = $nextModel->dateOfFile;
+		$data['paxName'] = $nextModel->paxName;
+		$data['airlineName'] = $nextModel->airlineName;
+
 		echo json_encode($data);
 	}
 }
