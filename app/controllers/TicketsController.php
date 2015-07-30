@@ -180,8 +180,13 @@ class TicketsController extends BaseController {
 		 */
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
-			//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
+
+			if ($newFromDate != null && $newToDate != null) {
+				$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
+			}
+
 			$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+
 
 			// $index variable to store the location of the current ticketNumber
 			// Using this variable to locate the next ticketNumber in row
@@ -215,6 +220,10 @@ class TicketsController extends BaseController {
 			$data[$index]['ticketNumber'] = $model[0]['ticketNumber'];
 
 		}else if(sizeof($model)>1){
+			if ($newFromDate != null && $newToDate != null) {
+				$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
+			}
+
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
 				//if($document){

@@ -137,7 +137,11 @@
             fromDate:fromDate,
             toDate:toDate},
           success: function(data){
-            if(data.length>1){
+            if(data[0]['dateRangeSelected'] == 'dateRangeSelected'){
+              $.each(data,function(index,item){
+                $("#text-field").append("<div class='text-block'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span><button class='print-btn'>Print</button></h3>"+item['content']+"</div><hr>");
+              });
+            }else if(data.length>1){
               maxIndexForDoc = data.length -1;
               $.each(data,function(index,item){
                 $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
@@ -183,6 +187,8 @@
             $("input[name='ticketNumber']").val('');
             $("input[name='passengerName']").val('');
             $("input[name='rloc']").val('');
+            $("input[name='date-from-field']").val('');
+            $("input[name='date-to-field']").val('');
           }
         });
       }
@@ -225,7 +231,6 @@
         dataType: "json",
         data: {systemName: systemName, ticketNumber: ticketNumber},
         success: function (data) {
-          console.log(data);
             appendDataPrevNext(data, 'next');
         }
       });
