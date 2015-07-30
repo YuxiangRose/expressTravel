@@ -57,23 +57,30 @@
 @section('js')
 <script>
   $(document).ready(function() {
+    /* Enable datepicker widget */
+    // Sets both datepicker not able to select any date pass today
+    // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
+    // e.g. date-from-field has the value of 08/08/2015 then date-to-field cannot select any date before 08/08/2015, only can select between 08/08/2015 and today
     $( "#date-from-field" ).datepicker({
-      defaultDate: "+1w",
+//      defaultDate: "+1w",
 //        changeMonth: true,
 //        numberOfMonths: 2,
       onClose: function( selectedDate ) {
         $( "#date-to-field" ).datepicker( "option", "minDate", selectedDate );
-      }
+      },
+      maxDate: "0"
     });
+
     $( "#date-to-field" ).datepicker({
-      defaultDate: "+1w",
+//      defaultDate: "+1w",
 //        changeMonth: true,
 //        numberOfMonths: 2,
       onClose: function( selectedDate ) {
-        $( "#date-from-field" ).datepicker( "option", "maxDate", selectedDate );
-      }
+        $( "#date-from-field" ).datepicker( "option", "maxDate", selectedDate ? selectedDate: "0");
+      },
+      maxDate: "0"
     });
-
+    /* End datepicker widget */
 
     $( "#text-field" ).accordion();
     $('.btn-prev').attr('disabled','disabled');
@@ -85,13 +92,16 @@
         $('.update-info').slideUp('slow');
     }, 1000);
 
-    $("button,input[type=submit]").button()
+    $("button,input[type=submit]").button();
 
     /* Two variables created to save the ticketNumber / systemName passed here from PHP when search is clicked */
     var globalTicketNumber;
     var globalSystemName;
 
+
+    /*****************/
     /* Search Record */
+    /*****************/
     $(".btn-search").click(function(event) {
       $('.btn-prev').button( "disable" );
       $('.btn-next').button( "disable" );
@@ -101,9 +111,11 @@
       event.preventDefault();
       var noError = true;
 
-      var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+      var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
       var passengerName = $.trim($("input[name='passengerName']").val());
-      var rloc           = $.trim($("input[name='rloc']").val());
+      var rloc          = $.trim($("input[name='rloc']").val());
+      var fromDate      = $.trim($("input[name='date-from-field']").val());
+      var toDate        = $.trim($("input[name='date-to-field']").val());
 
       if($.isNumeric(ticketNumber) || ticketNumber==""){
         noError = true;
@@ -121,7 +133,9 @@
           dataType: "json",
           data: {ticketNumber:ticketNumber,
             passengerName:passengerName,
-            rloc:rloc},
+            rloc:rloc,
+            fromDate:fromDate,
+            toDate:toDate},
           success: function(data){
             if(data.length>1){
               maxIndexForDoc = data.length -1;

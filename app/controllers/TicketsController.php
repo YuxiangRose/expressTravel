@@ -113,20 +113,66 @@ class TicketsController extends BaseController {
 			$rloc = "";
 		}
 
+		if($_POST['fromDate'] != null){
+			$fromDate = trim($_POST['fromDate']);
+			$parseFromDate = explode("/", $fromDate);
+			$newFromDate = $parseFromDate[2].$parseFromDate[0].$parseFromDate[1];
+		}else{
+			$newFromDate = null;
+		}
+
+		if($_POST['toDate'] != null){
+			$toDate = trim($_POST['toDate']);
+			$parseToDate = explode("/", $toDate);
+			$newToDate = $parseToDate[2].$parseToDate[0].$parseToDate[1];
+		}else{
+			$newToDate = null;  //set as today if input left null
+		}
+
+
 		$query = Document::query();
+		// Query ticketNumber input if not null
 		if($ticketNumber != null){
 			$query = $query->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%');
 		}
+		// Query rloc input if not null
 		if($rloc != null){
 			$query = $query->where('rloc', 'LIKE', '%'.$rloc.'%');
 		}
+		// Query passengerName if not null
+		// Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
 		if($passengerName != null){
 			$query = $query->where('paxName', 'LIKE', '%'.$first.'%')
 						   ->where('paxName','LIKE','%'.$mid.'%')
 						   ->where('paxName','LIKE','%'.$last.'%');
 		}
-		$model = $query->get();
+		/* Query fromDate and toDate if null or not null (combination of possibilities) */
+//		// If both date form and to input are empty
+//		// Both dates will be set as today
+//		if(($newFromDate == null) && ($newToDate == null)){
+//			$newFromDate = date('Ymd');
+//			$newToDate = date('Ymd');
+//			$this->dateQuery($query, $newFromDate, $newToDate);
+//		}
+//		// If date from is null it'll search the database to find the oldest date
+//		// Query will be the oldest date(fromDate) to the toDate input entered
+//		else
+		if(($newFromDate == null) && ($newToDate != null)){
+			$oldestDate = Document::orderBy('dateString', 'asc')->first();
+			$newFromDate = $oldestDate->dateString;
+			$this->dateQuery($query, $newFromDate, $newToDate);
+		}
+		// If date to is null it'll set the toDate to today
+		elseif(($newToDate == null) && ($newFromDate != null)){
+			$newToDate = date('Ymd');
+			$this->dateQuery($query, $newFromDate, $newToDate);
+		}
+		// Query the ticket in between the dates if both not null
+		elseif(($newFromDate != null) && ($newToDate != null)){
+			$this->dateQuery($query, $newFromDate, $newToDate);
+		}
 
+		$model = $query->get();
 
 		$index = 0;
 		/* If model only has one record, check if it's the first or last record within the same systemName to determine which prev/next button to enable or disable
@@ -149,6 +195,7 @@ class TicketsController extends BaseController {
 					$allIndex[] = $key;
 				}
 			}
+
 			$maxIndex = max($allIndex);  //Check the max index
 			$minIndex = min($allIndex);  //Check the min index usually 0
 
@@ -160,23 +207,23 @@ class TicketsController extends BaseController {
 				$data[$index]['disable-prev'] = 'disable-prev';
 			}
 
-			$data[$index]['content']=$model[0]['fileContent'];
-			$data[$index]['dateOfFile']=$model[0]['dateOfFile'];
-			$data[$index]['paxName']=$model[0]['paxName'];
-			$data[$index]['airlineName']=$model[0]['airlineName'];
-			$data[$index]['systemName']=$model[0]['systemName'];
-			$data[$index]['ticketNumber']=$model[0]['ticketNumber'];
+			$data[$index]['content'] = $model[0]['fileContent'];
+			$data[$index]['dateOfFile'] = $model[0]['dateOfFile'];
+			$data[$index]['paxName'] = $model[0]['paxName'];
+			$data[$index]['airlineName'] = $model[0]['airlineName'];
+			$data[$index]['systemName'] = $model[0]['systemName'];
+			$data[$index]['ticketNumber'] = $model[0]['ticketNumber'];
 
 		}else if(sizeof($model)>1){
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
 				//if($document){
-					$data[$index]['content']=$document['fileContent'];
-					$data[$index]['dateOfFile']=$document['dateOfFile'];
-					$data[$index]['paxName']=$document['paxName'];
-					$data[$index]['airlineName']=$document['airlineName'];
-					$data[$index]['systemName']=$document['systemName'];
-					$data[$index]['ticketNumber']=$document['ticketNumber'];
+				$data[$index]['content'] = $document['fileContent'];
+				$data[$index]['dateOfFile'] = $document['dateOfFile'];
+				$data[$index]['paxName'] = $document['paxName'];
+				$data[$index]['airlineName'] = $document['airlineName'];
+				$data[$index]['systemName'] = $document['systemName'];
+				$data[$index]['ticketNumber'] = $document['ticketNumber'];
 				//}else{
 					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
 				//}
@@ -258,5 +305,9 @@ class TicketsController extends BaseController {
 		$data['airlineName'] = $nextModel->airlineName;
 
 		echo json_encode($data);
+	}
+
+	public function dateQuery($query, $newFromDate, $newToDate){
+		$query = $query->whereBetween('dateString', array($newFromDate, $newToDate));
 	}
 }
