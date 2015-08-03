@@ -181,10 +181,6 @@ class TicketsController extends BaseController {
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
 
-			if ($newFromDate != null && $newToDate != null) {
-				$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
-			}
-
 			$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
 
 
@@ -243,7 +239,10 @@ class TicketsController extends BaseController {
 		}else{
 			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
-//		var_dump($data);die;
+
+		if ($newFromDate != null && $newToDate != null) {
+			$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
+		}
 		echo json_encode($data);
 	}  //End search function
 
