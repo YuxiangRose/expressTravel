@@ -243,6 +243,7 @@ class TicketsController extends BaseController {
 		}else{
 			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
+//		var_dump($data);die;
 		echo json_encode($data);
 	}  //End search function
 
