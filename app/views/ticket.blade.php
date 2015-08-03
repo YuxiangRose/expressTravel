@@ -184,6 +184,7 @@
       }
     });  //end btn-search
 
+      /* Only used inside search where only one record is found */
       function displaySingleDataFromSearch(data){
           $.each(data,function(index,item) {
               $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
@@ -192,11 +193,9 @@
                   collapsible: true,
                   header: "> div > h3"
               });
+
               globalSystemName = item['systemName'];
               globalTicketNumber = item['ticketNumber'];
-              //Enables all buttons first and use the codes below to check which one should be disabled
-              $('.btn-prev').button( "enable" );
-              $('.btn-next').button( "enable" );
 
               /* Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
               //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
@@ -211,6 +210,11 @@
                   $('.btn-prev').button( "disable" );
               }
           });
+              //Enables all buttons first and use the codes below to check which one should be disabled
+              $('.btn-prev').button( "enable" );
+              $('.btn-next').button( "enable" );
+
+
       }
 
     /*
