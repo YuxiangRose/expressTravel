@@ -180,8 +180,14 @@ class TicketsController extends BaseController {
 		 */
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
-			//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
-			$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+
+			if(($newFromDate != null) && ($newToDate != null)){
+				// If
+				$getAllModel = Document::whereBetween('dateString', array($newFromDate, $newToDate))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+			}else{
+				//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
+				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+			}
 
 			// $index variable to store the location of the current ticketNumber
 			// Using this variable to locate the next ticketNumber in row
@@ -257,7 +263,7 @@ class TicketsController extends BaseController {
 	}
 
 	/**
-	 * functoin nextRow()
+	 * function nextRow()
 	 * Used by both next() and prev()
 	 * Search database to find the same systemName
 	 * Sort the search in ticketNumber order which gives the index a sequence
@@ -307,7 +313,19 @@ class TicketsController extends BaseController {
 		echo json_encode($data);
 	}
 
+	/**
+	 * Function dateQuery()
+	 * Used in search() where multi queries that meet the requirement will run
+	 * @param $query			when requirement met, this variable will contain the queries needs to run
+	 * @param $newFromDate		from date from date picker
+	 * @param $newToDate		to date	from date picker
+     */
 	public function dateQuery($query, $newFromDate, $newToDate){
 		$query = $query->whereBetween('dateString', array($newFromDate, $newToDate));
+	}
+
+	public function report(){
+		$data = ['date','hi'];
+		return json_encode($data);
 	}
 }

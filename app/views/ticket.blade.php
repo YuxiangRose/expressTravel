@@ -43,6 +43,7 @@
       <button class="btn-next" name="next">NEXT</button>
       <button class="btn-next-record" name="nextRecord">Next Record</button>
       <button class="btn-prev-record" name="prevRecord">Prev Record</button>
+      <button class="btn-report" name="report">Report</button>
     </div> <!---end button-field -->
 
     <input type="hidden" name="ticketHolder" value="">
@@ -308,6 +309,20 @@
       $("#text-field").append(rest);
       $("#text-field").accordion("refresh");
 
+    });
+
+    $('.btn-report').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            method: "post",
+            url: "/report",
+            dataType: "json",
+//            data: {systemName: systemName, ticketNumber: ticketNumber},
+            success: function(data){
+                console.log(data);
+                $("#text-field").append(data);
+            }
+        });
     });
   }); //end document ready
 </script>
