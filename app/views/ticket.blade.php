@@ -214,7 +214,7 @@
 
     /*
      * Next Button
-     * This will find the next ticketNumber in row.
+     * This will find the next ticketNumber in column.
      * */
     $(".btn-next").click(function(event) {
       event.preventDefault();
@@ -235,7 +235,7 @@
     
     /*
      * Previous Button
-     * This will find the next ticketNumber in row.
+     * This will find the previous ticketNumber in column.
      * */
     $(".btn-prev").click(function(event) {
       event.preventDefault();
