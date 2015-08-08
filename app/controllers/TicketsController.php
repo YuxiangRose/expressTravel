@@ -362,8 +362,31 @@ class TicketsController extends BaseController {
 		}
 	}
 
+	
 	public function report(){
 		$data = array();
+		$this->searchReportNullValidation($_POST['ticketNumber'],
+			$_POST['passengerName'],
+			$_POST['rloc'],
+			$_POST['fromDate'],
+			$_POST['toDate']);
+
+		$query = Document::query();
+		$this->searchReportQuery($query);
+		$model = $query->get();
+
+		$index = 0;
+		foreach ($model as $key => $value) {
+			$document = $value->getAttributes();
+			//if($document){
+			$data[$index]['content'] = $document['fileContent'];
+			$data[$index]['dateOfFile'] = $document['dateOfFile'];
+			$data[$index]['paxName'] = $document['paxName'];
+			$data[$index]['airlineName'] = $document['airlineName'];
+			$data[$index]['systemName'] = $document['systemName'];
+			$data[$index]['ticketNumber'] = $document['ticketNumber'];
+			$index++;
+		}
 		return json_encode($data);
 	}
 }
