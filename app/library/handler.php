@@ -244,7 +244,7 @@
 
 
             //parse file content into whole string;
-            $fileContent = "<pre>"; 
+            $fileContent = "<pre class='pre-text'>"; 
             $fileContent .= file_get_contents($path.$fileName);
             $fileContent .= "</pre>";
 

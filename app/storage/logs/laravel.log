@@ -4581,3 +4581,7 @@ Stack trace:
 #18 D:\wamp\www\tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(641): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
 #19 D:\wamp\www\tickets\public\index.php(49): Illuminate\Foundation\Application->run()
 #20 {main} [] []
+[2015-08-04 00:28:13] local.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected end of file' in C:\xampp\htdocs\Tickets\app\routes.php:23
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []

@@ -16,10 +16,13 @@ input[type=submit]:hover {cursor: pointer;}
 	.sub-container .date-to-field{width: 200px; float: right;}
 .form-field{width: 500px; float:left; margin-bottom: 5px;}
 .button-field{min-width:500px; float:left; margin-bottom: 5px;}
-#text-field{width: 870px; min-height: 700px; margin-top: 15px; padding: 10px 0 0 64px;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;float: left;}
-	#text-field .text-block{background: none repeat scroll 0 0 white; min-height: 440px; margin: 0 70px 10px 0;padding: 0 0 0 120px; height: auto;}
-	#text-field .text-block-single{background: none repeat scroll 0 0 white; margin: 0 70px 10px 0;padding: 1px 0 0 120px; box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;}
-	#text-field .block-hearder{margin: 0; width: 799px;}
+#text-field{width: 870px; min-height: 700px; margin-top: 15px; padding: 10px 30px 0;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;float: left;}
+	#text-field .block-hearder{margin: 0; float: left;width: 840px; padding: 5px 0 5px 30px;}
+	#text-field .text-block{background: none repeat scroll 0 0 white; padding: 5px 0 5px 30px; min-height: 440px; height: auto;float: left;width: 840px; overflow-x: hidden;}
 	#text-field .block-hearder span{margin: 0 0 0 30px;}
-	#text-field .print-btn{float: right; margin: -10px 70px 0 0;}
+	#text-field .print-btn{float: right;}
+	#text-field pre{float: left; width: 620px;}
+	#text-field .comment-area{overflow-x: hidden; overflow-y: auto;float: left;width: 210px;margin: 10px 0 0;border-radius: 5px;height: 390px;background: none repeat scroll 0 0 #e3e3e3;}
+	#text-field .button-block{float: right;}
+	#text-field .single-comment{float: left; padding: 0 20px; width: 170px; word-wrap: break-word;}
 .ticket-highlight{background-color: yellow;}

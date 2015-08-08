@@ -319,4 +319,12 @@ class TicketsController extends BaseController {
 	public function dateQuery($query, $newFromDate, $newToDate){
 		$query = $query->whereBetween('dateString', array($newFromDate, $newToDate));
 	}
+
+	public function saveComment(){
+		$data = array();
+		if($_POST['comment']){
+			$data['comment'] = $_POST['comment'];
+			echo json_encode($data);
+		}
+	}
 }

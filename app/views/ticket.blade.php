@@ -57,6 +57,7 @@
 @section('js')
 <script>
   $(document).ready(function() {
+    var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Comment</button></div>";
     /* Enable datepicker widget */
     // Sets both datepicker not able to select any date pass today
     // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
@@ -139,36 +140,30 @@
           success: function(data){
             if(data[0]['dateRangeSelected'] == 'dateRangeSelected'){
               $.each(data,function(index,item){
-                $("#text-field").append("<div class='text-block'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span><button class='print-btn'>Print</button></h3>"+item['content']+"</div><hr>");
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span><button class='print-btn'>Print</button></h3>"+item['content']+"</div><hr>");
               });
             }else if(data.length>1){
               maxIndexForDoc = data.length -1;
               $.each(data,function(index,item){
-                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
-              });
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'></div>"+buttonBlock+"</div></div>");
 
+              });
+              $(".print-btn").button();
+              $(".comment-btn").button();
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                 collapsible: true,
-                header: "> div > h3"
+                header: "> div > h3",
+                animate: 0
               });
               $('.btn-prev-record').button( "enable" );
               $('.btn-next-record').button( "enable" );
             }else{
               $.each(data,function(index,item) {
-                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
-                $( "#text-field" ).accordion( "destroy" );
-                $( "#text-field" ).accordion({
-                  collapsible: true,
-                  header: "> div > h3"
-                });
+                $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'></div>"+buttonBlock+"</div></div>");
                 globalSystemName = item['systemName'];
                 globalTicketNumber = item['ticketNumber'];
-                //Enables all buttons first and use the codes below to check which one should be disabled
-                $('.btn-prev').button( "enable" );
-                $('.btn-next').button( "enable" );
-
-                /* Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
+                //Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
                 //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
                 //Disable-next - The record pulled has reached the end of the record
                 //Disable-prev - The record pulled has reached the earliest of the record
@@ -181,7 +176,18 @@
                   $('.btn-prev').button( "disable" );
                 }
               });
-
+              $(".print-btn").button();
+              $(".comment-btn").button();
+              $( "#text-field" ).accordion( "destroy" );
+              $( "#text-field" ).accordion({
+                collapsible: true,
+                header: "> div > h3",
+                animate: 0
+              });
+              
+              //Enables all buttons first and use the codes below to check which one should be disabled
+              $('.btn-prev').button( "enable" );
+              $('.btn-next').button( "enable" );
             }
 
             $("input[name='ticketNumber']").val('');
@@ -268,7 +274,8 @@
       $("#text-field").accordion("destroy");
       $("#text-field").accordion({
         collapsible: true,
-        header: "> div > h3"
+        header: "> div > h3",
+        animate: 0
       });
 
       globalTicketNumber = data['ticketNumber'];
@@ -312,8 +319,44 @@
       $("#text-field").append("<div class='group'>"+content+"<div>");
       $("#text-field").append(rest);
       $("#text-field").accordion("refresh");
-
     });
+
+
+    var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
+    $("#text-field").on('click','.comment-btn',function(e){
+      $(this).parents('.text-block').append(inputField);
+      $(this).button( "disable" ); 
+    })
+
+    $("#text-field").on('click','.comment-save',function(e){
+      var comment = $.trim($("input[name='comment-input']").val());
+      var ticketNumber = $(this).closest('.group').find('.ticket-highlight').text()
+      var comentArea = $(this).closest('.group').find('.comment-area');
+      $.ajax({
+        method: "post",
+        url: "/saveComment",
+        dataType: "json",
+        data: {ticketNumber:ticketNumber,
+          comment:comment
+          },
+        success: function(data){
+          comentArea.append("<div class='single-comment'><p>"+data['comment']+"</p></div>");
+          $("#text-field").find('.inputField').remove();
+          $('.comment-btn').button("enable");
+        }
+      })
+    })
+
+    $("#text-field").on('click','.comment-cancel',function(e){
+      $('.comment-btn').button( "enable" );  
+      $(this).parent().remove();
+    })
+
+    $( "#text-field" ).on( "accordionactivate", function( event, ui ) {
+      $("#text-field").find('.inputField').remove();
+      $('.comment-btn').button("enable");
+    });
+
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}
