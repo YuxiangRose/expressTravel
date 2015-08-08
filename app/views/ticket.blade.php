@@ -43,6 +43,7 @@
       <button class="btn-next" name="next">NEXT</button>
       <button class="btn-next-record" name="nextRecord">Next Record</button>
       <button class="btn-prev-record" name="prevRecord">Prev Record</button>
+      <button class="btn-report" name="report">Report</button>
     </div> <!---end button-field -->
 
     <input type="hidden" name="ticketHolder" value="">
@@ -242,7 +243,7 @@
 
     /*
      * Next Button
-     * This will find the next ticketNumber in row.
+     * This will find the next ticketNumber in column.
      * */
     $(".btn-next").click(function(event) {
       event.preventDefault();
@@ -262,7 +263,7 @@
     
     /*
      * Previous Button
-     * This will find the next ticketNumber in row.
+     * This will find the previous ticketNumber in column.
      * */
     $(".btn-prev").click(function(event) {
       event.preventDefault();
@@ -336,6 +337,47 @@
       $("#text-field").append(rest);
       $("#text-field").accordion("refresh");
 
+    });
+
+    $('.btn-report').click(function(e){
+        e.preventDefault();
+
+        var noError = true;
+
+        var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
+        var passengerName = $.trim($("input[name='passengerName']").val());
+        var rloc          = $.trim($("input[name='rloc']").val());
+        var fromDate      = $.trim($("input[name='date-from-field']").val());
+        var toDate        = $.trim($("input[name='date-to-field']").val());
+
+        if($.isNumeric(ticketNumber) || ticketNumber==""){
+            noError = true;
+        }else{
+            noError = false;
+            $("input[name='ticketNumber']").val('');
+            alert("please enter a number");
+        }
+
+        if(noError){
+            $.ajax({
+                method: "post",
+                url: "/report",
+                dataType: "json",
+                data: {ticketNumber: ticketNumber, passengerName: passengerName, rloc: rloc, fromDate: fromDate, toDate: toDate},
+                success: function(data){
+                    $("#text-field").empty();
+                    $("#text-field").append("<button class='print-btn'>Print</button>");
+                    $.each(data,function(index,item){
+                        $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div></div>");
+                    });
+                    $("#text-field").append("<button class='print-btn'>Print</button>");
+                }
+            });
+        }
+
+        $("input[name='ticketNumber']").val('');
+        $("input[name='passengerName']").val('');
+        $("input[name='rloc']").val('');
     });
   }); //end document ready
 </script>

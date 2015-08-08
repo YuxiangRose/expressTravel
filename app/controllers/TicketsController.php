@@ -15,6 +15,19 @@ class TicketsController extends BaseController {
 	|
 	*/
 
+	/*Used in searchReportNullValidation() to store variables here and so search() and report() can access these variables*/
+	private $ticketNumber;
+
+	private $passengerName;
+	private $first;         // first of passgenerName after parsed
+	private $mid;           // mid of passgenerName after parsed
+	private $last;          // last of passgenerName after parsed
+
+	private $rloc;
+	private $newFromDate;
+	private $newToDate;
+	/*******/
+
 	public function getIndex()
 	{	
 		$num =	$this->fileConvertAndUpdate();
@@ -84,94 +97,14 @@ class TicketsController extends BaseController {
      */
 	public function search(){
 		$data = array();
-		/* Check if ticket number entered is not null and is number */
-		if(($_POST['ticketNumber'] != null) && (is_numeric($_POST['ticketNumber']))){
-			$ticketNumber = trim($_POST['ticketNumber']);
-		}else{
-			$ticketNumber = "";
-		}
-
-		/* Parse the passenger name by space or slash */
-		if (($_POST['passengerName'] != null) || empty(($_POST['passengerName']))) {
-			$passengerName = strtoupper(trim($_POST['passengerName']));
-			if(strpos($passengerName,'/')){
-				$parsePassengerName = explode("/", $passengerName);
-			}else{
-				$parsePassengerName = explode(" ", $passengerName);
-			}
-			$first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
-			$mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
-			$last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
-		}else{
-			$passengerName = null;
-		}
-
-		/* Check if RLOC is entered */
-		if (($_POST['rloc'] != null)) {
-			$rloc = strtoupper(trim($_POST['rloc']));
-		}else{
-			$rloc = "";
-		}
-
-		if($_POST['fromDate'] != null){
-			$fromDate = trim($_POST['fromDate']);
-			$parseFromDate = explode("/", $fromDate);
-			$newFromDate = $parseFromDate[2].$parseFromDate[0].$parseFromDate[1];
-		}else{
-			$newFromDate = null;
-		}
-
-		if($_POST['toDate'] != null){
-			$toDate = trim($_POST['toDate']);
-			$parseToDate = explode("/", $toDate);
-			$newToDate = $parseToDate[2].$parseToDate[0].$parseToDate[1];
-		}else{
-			$newToDate = null;  //set as today if input left null
-		}
-
+		$this->searchReportNullValidation($_POST['ticketNumber'],
+										   $_POST['passengerName'],
+										   $_POST['rloc'],
+										   $_POST['fromDate'],
+										   $_POST['toDate']);
 
 		$query = Document::query();
-		// Query ticketNumber input if not null
-		if($ticketNumber != null){
-			$query = $query->where('ticketNumber', 'LIKE', '%'.$ticketNumber.'%');
-		}
-		// Query rloc input if not null
-		if($rloc != null){
-			$query = $query->where('rloc', 'LIKE', '%'.$rloc.'%');
-		}
-		// Query passengerName if not null
-		// Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
-		if($passengerName != null){
-			$query = $query->where('paxName', 'LIKE', '%'.$first.'%')
-						   ->where('paxName','LIKE','%'.$mid.'%')
-						   ->where('paxName','LIKE','%'.$last.'%');
-		}
-		/* Query fromDate and toDate if null or not null (combination of possibilities) */
-//		// If both date form and to input are empty
-//		// Both dates will be set as today
-//		if(($newFromDate == null) && ($newToDate == null)){
-//			$newFromDate = date('Ymd');
-//			$newToDate = date('Ymd');
-//			$this->dateQuery($query, $newFromDate, $newToDate);
-//		}
-//		// If date from is null it'll search the database to find the oldest date
-//		// Query will be the oldest date(fromDate) to the toDate input entered
-//		else
-		if(($newFromDate == null) && ($newToDate != null)){
-			$oldestDate = Document::orderBy('dateString', 'asc')->first();
-			$newFromDate = $oldestDate->dateString;
-			$this->dateQuery($query, $newFromDate, $newToDate);
-		}
-		// If date to is null it'll set the toDate to today
-		elseif(($newToDate == null) && ($newFromDate != null)){
-			$newToDate = date('Ymd');
-			$this->dateQuery($query, $newFromDate, $newToDate);
-		}
-		// Query the ticket in between the dates if both not null
-		elseif(($newFromDate != null) && ($newToDate != null)){
-			$this->dateQuery($query, $newFromDate, $newToDate);
-		}
-
+		$this->searchReportQuery($query);
 		$model = $query->get();
 
 		$index = 0;
@@ -181,8 +114,13 @@ class TicketsController extends BaseController {
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
 
-			$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
-
+			if(($this->newFromDate != null) && ($this->newToDate != null)){
+				// If
+				$getAllModel = Document::whereBetween('dateString', array($this->newFromDate, $this->newToDate))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+			}else{
+				//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
+				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+			}
 
 			// $index variable to store the location of the current ticketNumber
 			// Using this variable to locate the next ticketNumber in row
@@ -190,7 +128,7 @@ class TicketsController extends BaseController {
 			$allIndex = [];
 			if(sizeof($getAllModel) > 0){
 				foreach($getAllModel as $key => $value){
-					if(($value->ticketNumber) == $ticketNumber){
+					if(($value->ticketNumber) == $this->ticketNumber){
 						$index = $key;
 					}
 					$allIndex[] = $key;
@@ -216,7 +154,7 @@ class TicketsController extends BaseController {
 			$data[$index]['ticketNumber'] = $model[0]['ticketNumber'];
 
 		}else if(sizeof($model)>1){
-			if ($newFromDate != null && $newToDate != null) {
+			if ($this->newFromDate != null && $this->newToDate != null) {
 				$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
 			}
 
@@ -240,9 +178,6 @@ class TicketsController extends BaseController {
 			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
 
-		if ($newFromDate != null && $newToDate != null) {
-			$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
-		}
 		echo json_encode($data);
 	}  //End search function
 
@@ -266,7 +201,7 @@ class TicketsController extends BaseController {
 	}
 
 	/**
-	 * functoin nextRow()
+	 * function nextRow()
 	 * Used by both next() and prev()
 	 * Search database to find the same systemName
 	 * Sort the search in ticketNumber order which gives the index a sequence
@@ -316,7 +251,147 @@ class TicketsController extends BaseController {
 		echo json_encode($data);
 	}
 
+	/**
+	 * function dateQuery()
+	 * Used in searchReportQuery() where multi queries that meet the requirement will run
+	 * @param $query			when requirement met, this variable will contain the queries needs to run
+	 * @param $newFromDate		from date from date picker
+	 * @param $newToDate		to date	from date picker
+     */
 	public function dateQuery($query, $newFromDate, $newToDate){
-		$query = $query->whereBetween('dateString', array($newFromDate, $newToDate));
+		return $query->whereBetween('dateString', array($newFromDate, $newToDate));
+	}
+
+	/**
+	 * function searchReportNullValidation()
+	 * Used in search() and report()
+	 * Checks what needs to be done when the variables are null or not
+	 * The variables will then be stored as global variables
+	 * @param $ticketNumber			$_POST['ticketNumber']
+	 * @param $passengerName		$_POST['passengerName']
+	 * @param $rloc					$_POST['rloc']
+	 * @param $fromDate				$_POST['fromDate']
+	 * @param $toDate				$_POST['toDate']
+     */
+	public function searchReportNullValidation($ticketNumber, $passengerName, $rloc , $fromDate, $toDate){
+		/* Check if ticket number entered is not null and is number */
+		if(($ticketNumber != null) && (is_numeric($ticketNumber))){
+			$this->ticketNumber = trim($ticketNumber);
+		}else{
+			$this->ticketNumber = "";
+		}
+
+		/* Parse the passenger name by space or slash */
+		if (($passengerName != null) || empty(($passengerName))) {
+			$this->passengerName = strtoupper(trim($passengerName));
+			if(strpos($this->passengerName,'/')){
+				$parsePassengerName = explode("/", $this->passengerName);
+			}else{
+				$parsePassengerName = explode(" ", $this->passengerName);
+			}
+			$this->first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
+			$this->mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
+			$this->last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
+		}else{
+			$this->passengerName = null;
+		}
+
+		/* Check if RLOC is entered */
+		if (($rloc != null)) {
+			$this->rloc = strtoupper(trim($rloc));
+		}else{
+			$this->rloc = "";
+		}
+
+		if($fromDate != null){
+			$parseFromDate = explode("/", trim($fromDate));
+			$this->newFromDate = $parseFromDate[2].$parseFromDate[0].$parseFromDate[1];
+		}else{
+			$this->newFromDate = null;
+		}
+
+		if($toDate != null){
+			$parseToDate = explode("/", trim($toDate));
+			$this->newToDate = $parseToDate[2].$parseToDate[0].$parseToDate[1];
+		}else{
+			$this->newToDate = null;  //set as today if input left null
+		}
+	}
+
+	/**
+	 * function searchReportQuery()
+	 * Used in search() and report()
+	 * If the variables aren't null a query condition will be added into the final query when it runs
+	 * @param $query		stores all the conditions
+     */
+	public function searchReportQuery($query){
+		// Query ticketNumber input if not null
+		if($this->ticketNumber != null){
+			$query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
+		}
+		// Query rloc input if not null
+		if($this->rloc != null){
+			$query = $query->where('rloc', 'LIKE', '%'.$this->rloc.'%');
+		}
+		// Query passengerName if not null
+		// Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
+		if($this->passengerName != null){
+			$query = $query->where('paxName', 'LIKE', '%'.$this->first.'%')
+				->where('paxName','LIKE','%'.$this->mid.'%')
+				->where('paxName','LIKE','%'.$this->last.'%');
+		}
+		/* Query fromDate and toDate if null or not null (combination of possibilities) */
+//		// If both date form and to input are empty
+//		// Both dates will be set as today
+//		if(($newFromDate == null) && ($newToDate == null)){
+//			$newFromDate = date('Ymd');
+//			$newToDate = date('Ymd');
+//			$this->dateQuery($query, $newFromDate, $newToDate);
+//		}
+//		// If date from is null it'll search the database to find the oldest date
+//		// Query will be the oldest date(fromDate) to the toDate input entered
+//		else
+		if(($this->newFromDate == null) && ($this->newToDate != null)){
+			$oldestDate = Document::orderBy('dateString', 'asc')->first();
+			$this->newFromDate = $oldestDate->dateString;
+			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
+		}
+		// If date to is null it'll set the toDate to today
+		elseif(($this->newToDate == null) && ($this->newFromDate != null)){
+			$this->newToDate = date('Ymd');
+			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
+		}
+		// Query the ticket in between the dates if both not null
+		elseif(($this->newFromDate != null) && ($this->newToDate != null)){
+			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
+		}
+	}
+
+	
+	public function report(){
+		$data = array();
+		$this->searchReportNullValidation($_POST['ticketNumber'],
+			$_POST['passengerName'],
+			$_POST['rloc'],
+			$_POST['fromDate'],
+			$_POST['toDate']);
+
+		$query = Document::query();
+		$this->searchReportQuery($query);
+		$model = $query->get();
+
+		$index = 0;
+		foreach ($model as $key => $value) {
+			$document = $value->getAttributes();
+			//if($document){
+			$data[$index]['content'] = $document['fileContent'];
+			$data[$index]['dateOfFile'] = $document['dateOfFile'];
+			$data[$index]['paxName'] = $document['paxName'];
+			$data[$index]['airlineName'] = $document['airlineName'];
+			$data[$index]['systemName'] = $document['systemName'];
+			$data[$index]['ticketNumber'] = $document['ticketNumber'];
+			$index++;
+		}
+		return json_encode($data);
 	}
 }
