@@ -21,7 +21,7 @@
 
 <script>
   $(document).ready(function() {
-
+    console.log(window.opener.data);
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}
