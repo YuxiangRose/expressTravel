@@ -100,90 +100,88 @@
     var globalSystemName;
 
 
-    /*****************/
-    /* Search Record */
-    /*****************/
-    $(".btn-search").click(function(event) {
-      $('.btn-prev').button( "disable" );
-      $('.btn-next').button( "disable" );
-      $('.btn-prev-record').button( "disable" );
-      $('.btn-next-record').button( "disable" );
-
-      event.preventDefault();
-      var noError = true;
-
-      var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
-      var passengerName = $.trim($("input[name='passengerName']").val());
-      var rloc          = $.trim($("input[name='rloc']").val());
-      var fromDate      = $.trim($("input[name='date-from-field']").val());
-      var toDate        = $.trim($("input[name='date-to-field']").val());
-
-      if($.isNumeric(ticketNumber) || ticketNumber==""){
-        noError = true;
-      }else{
-        noError = false;
-        $("input[name='ticketNumber']").val('');
-        alert("please enter a number");
-      }
-
-      if(noError){
-        $("#text-field").empty();
-        $.ajax({
-          method: "post",
-          url: "/search",
-          dataType: "json",
-          data: {ticketNumber:ticketNumber,
-            passengerName:passengerName,
-            rloc:rloc,
-            fromDate:fromDate,
-            toDate:toDate},
-          success: function(data){
-              console.log(data);
-              console.log(data[0]);
-            if(data.length>1){
-              if(data[0]['dateRangeSelected'] == 'dateRangeSelected'){
-                $.each(data,function(index,item){
-                  $("#text-field").append("<div class='text-block'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span><button class='print-btn'>Print</button></h3>"+item['content']+"</div><hr>");
-                });
-//                window.open('/date');
-              }else{
-                maxIndexForDoc = data.length -1;
-                $.each(data,function(index,item){
-                  $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
-                });
-
-                $( "#text-field" ).accordion( "destroy" );
-                $( "#text-field" ).accordion({
-                  collapsible: true,
-                  header: "> div > h3"
-                });
-                $('.btn-prev-record').button( "enable" );
-                $('.btn-next-record').button( "enable" );
-              }
-            }else{
-              if(typeof(data[0]) != 'undefined'){
-                if(data[0]['dateRangeSelected'] == 'dateRangeSelected'){
-                  $.each(data,function(index,item){
-                    $("#text-field").append("<div class='text-block'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span><button class='print-btn'>Print</button></h3>"+item['content']+"</div><hr>");
-                  });
-                }else{
-                    displaySingleDataFromSearch(data);
-                }
-              }else{
-                  displaySingleDataFromSearch(data);
-              }
-
-            }
-
-            $("input[name='ticketNumber']").val('');
-            $("input[name='passengerName']").val('');
-            $("input[name='rloc']").val('');
-            $("input[name='date-from-field']").val('');
-            $("input[name='date-to-field']").val('');
+      /*****************/
+      /* Search Record */
+      /*****************/
+      $(".btn-search").click(function(event) {
+          $('.btn-prev').button( "disable" );
+          $('.btn-next').button( "disable" );
+          $('.btn-prev-record').button( "disable" );
+          $('.btn-next-record').button( "disable" );
+          event.preventDefault();
+          var noError = true;
+          var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+          var passengerName = $.trim($("input[name='passengerName']").val());
+          var rloc = $.trim($("input[name='rloc']").val());
+          var fromDate = $.trim($("input[name='date-from-field']").val());
+          var toDate = $.trim($("input[name='date-to-field']").val());
+          if($.isNumeric(ticketNumber) || ticketNumber==""){
+              noError = true;
+          }else{
+              noError = false;
+              $("input[name='ticketNumber']").val('');
+              alert("please enter a number");
           }
-        });
-      }
-    });  //end btn-search
+          if(noError){
+              $("#text-field").empty();
+              $.ajax({
+                  method: "post",
+                  url: "/search",
+                  dataType: "json",
+                  data: {ticketNumber:ticketNumber,
+                      passengerName:passengerName,
+                      rloc:rloc,
+                      fromDate:fromDate,
+                      toDate:toDate},
+                  success: function(data){
+                      if(data.length>1){
+                          maxIndexForDoc = data.length -1;
+                          $.each(data,function(index,item){
+                              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+                          });
+                          $( "#text-field" ).accordion( "destroy" );
+                          $( "#text-field" ).accordion({
+                              collapsible: true,
+                              header: "> div > h3"
+                          });
+                          $('.btn-prev-record').button( "enable" );
+                          $('.btn-next-record').button( "enable" );
+                      }else{
+                          $.each(data,function(index,item) {
+                              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+                              $( "#text-field" ).accordion( "destroy" );
+                              $( "#text-field" ).accordion({
+                                  collapsible: true,
+                                  header: "> div > h3"
+                              });
+                              globalSystemName = item['systemName'];
+                              globalTicketNumber = item['ticketNumber'];
+                              //Enables all buttons first and use the codes below to check which one should be disabled
+                              $('.btn-prev').button( "enable" );
+                              $('.btn-next').button( "enable" );
+                              /* Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
+                              //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
+                              //Disable-next - The record pulled has reached the end of the record
+                              //Disable-prev - The record pulled has reached the earliest of the record
+                              if(item['disable-both'] == 'disable-both'){
+                                  $('.btn-prev').button( "disable" );
+                                  $('.btn-next').button( "disable" );
+                              }else if(item['disable-next'] == 'disable-next'){
+                                  $('.btn-next').button( "disable" );
+                              }else if(item['disable-prev'] == 'disable-prev'){
+                                  $('.btn-prev').button( "disable" );
+                              }
+                          });
+                      }
+                      $("input[name='ticketNumber']").val('');
+                      $("input[name='passengerName']").val('');
+                      $("input[name='rloc']").val('');
+                      $("input[name='date-from-field']").val('');
+                      $("input[name='date-to-field']").val('');
+                  }
+              });
+          }
+      }); //end btn-search
 
       /* Only used inside search where only one record is found */
       function displaySingleDataFromSearch(data){
@@ -340,6 +338,10 @@
     });
 
     $('.btn-report').click(function(e){
+        $('.btn-prev').button( "disable" );
+        $('.btn-next').button( "disable" );
+        $('.btn-prev-record').button( "disable" );
+        $('.btn-next-record').button( "disable" );
         e.preventDefault();
 
         var noError = true;
@@ -365,12 +367,17 @@
                 dataType: "json",
                 data: {ticketNumber: ticketNumber, passengerName: passengerName, rloc: rloc, fromDate: fromDate, toDate: toDate},
                 success: function(data){
-                    $("#text-field").empty();
-                    $("#text-field").append("<button class='print-btn'>Print</button>");
-                    $.each(data,function(index,item){
-                        $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"</div></div>");
-                    });
-                    $("#text-field").append("<button class='print-btn'>Print</button>");
+                    if(jQuery.isEmptyObject(data)){
+                        $("#text-field").empty();
+                        $("#text-field").append("<div class='text-block'>Sorry the document does not exist, or has not been update yet, please click update and try again.</div>");
+                    }else {
+                        $("#text-field").empty();
+                        $("#text-field").append("<button class='print-btn'>Print</button>");
+                        $.each(data, function (index, item) {
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + item['dateOfFile'] + "</span><span>" + item['paxName'] + "</span><span>" + item['airlineName'] + "</span></h3><div class='text-block'>" + item['content'] + "</div></div>");
+                        });
+                        $("#text-field").append("<button class='print-btn'>Print</button>");
+                    }
                 }
             });
         }
@@ -378,6 +385,8 @@
         $("input[name='ticketNumber']").val('');
         $("input[name='passengerName']").val('');
         $("input[name='rloc']").val('');
+        $("input[name='date-from-field']").val('');
+        $("input[name='date-to-field']").val('');
     });
   }); //end document ready
 </script>

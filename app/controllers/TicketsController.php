@@ -154,9 +154,6 @@ class TicketsController extends BaseController {
 			$data[$index]['ticketNumber'] = $model[0]['ticketNumber'];
 
 		}else if(sizeof($model)>1){
-			if ($this->newFromDate != null && $this->newToDate != null) {
-				$data[$index]['dateRangeSelected'] = 'dateRangeSelected';
-			}
 
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
@@ -367,7 +364,13 @@ class TicketsController extends BaseController {
 		}
 	}
 
-	
+
+	/**
+	 * function report()
+	 * A function that is similar to search()
+	 * But this function will return in a new page for print and report purpose.
+	 * @return string		json
+     */
 	public function report(){
 		$data = array();
 		$this->searchReportNullValidation($_POST['ticketNumber'],
@@ -381,17 +384,19 @@ class TicketsController extends BaseController {
 		$model = $query->get();
 
 		$index = 0;
-		foreach ($model as $key => $value) {
-			$document = $value->getAttributes();
-			//if($document){
-			$data[$index]['content'] = $document['fileContent'];
-			$data[$index]['dateOfFile'] = $document['dateOfFile'];
-			$data[$index]['paxName'] = $document['paxName'];
-			$data[$index]['airlineName'] = $document['airlineName'];
-			$data[$index]['systemName'] = $document['systemName'];
-			$data[$index]['ticketNumber'] = $document['ticketNumber'];
-			$index++;
+		if(sizeof($model) > 0) {
+			foreach ($model as $key => $value) {
+				$document = $value->getAttributes();
+				$data[$index]['content'] = $document['fileContent'];
+				$data[$index]['dateOfFile'] = $document['dateOfFile'];
+				$data[$index]['paxName'] = $document['paxName'];
+				$data[$index]['airlineName'] = $document['airlineName'];
+				$data[$index]['systemName'] = $document['systemName'];
+				$data[$index]['ticketNumber'] = $document['ticketNumber'];
+				$index++;
+			}
 		}
+
 		return json_encode($data);
 	}
 }
