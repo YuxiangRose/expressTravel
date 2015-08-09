@@ -92,7 +92,7 @@
 
     setTimeout(function() {
         $('.update-info').slideUp('slow');
-    }, 1);
+    }, 1000);
 
     $("button,input[type=submit]").button();
 
@@ -145,7 +145,8 @@
                           $( "#text-field" ).accordion( "destroy" );
                           $( "#text-field" ).accordion({
                               collapsible: true,
-                              header: "> div > h3"
+                              header: "> div > h3",
+                              animate: 0,
                           });
                           $('.btn-prev-record').button( "enable" );
                           $('.btn-next-record').button( "enable" );
@@ -157,7 +158,8 @@
                               $( "#text-field" ).accordion( "destroy" );
                               $( "#text-field" ).accordion({
                                   collapsible: true,
-                                  header: "> div > h3"
+                                  header: "> div > h3",
+                                  animate: 0,
                               });
                               globalSystemName = item['systemName'];
                               globalTicketNumber = item['ticketNumber'];
@@ -195,7 +197,8 @@
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                   collapsible: true,
-                  header: "> div > h3"
+                  header: "> div > h3",
+                  animate: 10
               });
 
               globalSystemName = item['systemName'];
@@ -238,7 +241,7 @@
           $(".update-info").show();
           setTimeout(function() {
               $('.update-info').slideUp('slow');
-          }, 1);
+          }, 1000);
         }
       });
     });   //end btn-update
@@ -295,7 +298,8 @@
       $("#text-field").accordion("destroy");
       $("#text-field").accordion({
         collapsible: true,
-        header: "> div > h3"
+        header: "> div > h3",
+        animate: 10
       });
 
       globalTicketNumber = data['ticketNumber'];
@@ -318,22 +322,18 @@
     $(".btn-next-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
-      $(".comment-btn").button('destroy');
-      var section = $(".group:first");
+      //$('.comment-btn').button('destroy');
       $(".group:first").find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
       var content = $(".group:first").html();
       $("div").remove(".group:first");
       $("#text-field").append("<div class='group'>"+content+"<div>");
       $("#text-field").accordion("refresh");
-      
-      $(".comment-btn").button();
     });
 
     $(".btn-prev-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
-      $(".comment-btn").button('destroy');
-      var section = $(".group:last");
+      //$('.comment-btn').button('destroy');
       $('.group:first').find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
       var content =  $(".group:last").html();
       $("div").remove(".group:last");
@@ -341,11 +341,12 @@
       $("#text-field").empty();
       $("#text-field").append("<div class='group'>"+content+"<div>");
       $("#text-field").append(rest);
+
       $("#text-field").accordion("refresh");
-      $(".comment-btn").button();
+
     });
 
-    var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
+    /*var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
     $("#text-field").on('click','.comment-btn',function(e){
       $(this).parents('.text-block').append(inputField);
       $('.comment-btn').button( "disable" );
@@ -377,9 +378,19 @@
     })
 
     $( "#text-field" ).on( "accordionactivate", function( event, ui ) {
+      //$('.comment-btn').button();
       $("#text-field").find('.inputField').remove();
       $('.comment-btn').button("enable");
-    });
+    });*/
+
+    $("#text-field").on('click','h3',function(e){
+      var content = '';
+      var test = $(this).parent().prevAll();
+      $.each(test, function(index, val) {
+         content += "<div class='group'>"+val.innerHTML+"</div>";
+      });
+      console.log(content);
+    })
 
   }); //end document ready
 </script>
