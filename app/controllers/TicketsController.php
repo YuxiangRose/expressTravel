@@ -404,7 +404,18 @@ class TicketsController extends BaseController {
 		$data = array();
 		if($_POST['comment']){
 			$data['comment'] = $_POST['comment'];
-			echo json_encode($data);
+			try {
+	            $note = Note::create(array(
+	                'ticketNumber'  => $_POST['ticketNumber'],
+	                'note'    => $_POST['comment'],
+	            ));
+	            $note->save();
+		        } catch (Exception $e) {
+		            $response['info'] = "fail";
+		            $boolean = false;
+		            echo $e;
+		        }			
 		}
+		echo json_encode($data);
 	}
 }

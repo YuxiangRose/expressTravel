@@ -294,7 +294,9 @@
      * */
     function appendDataPrevNext(data, pn){
       $("#text-field").empty();
-      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + data['dateOfFile'] + "</span><span>" + data['paxName'] + "</span><span>" + data['airlineName'] + "</span></h3><div class='text-block'>" + data['content'] + "<button class='print-btn'>Print</button></div></div>");
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + data['dateOfFile'] + "</span><span>" + data['paxName'] + "</span><span>" + data['airlineName'] + "</span></h3><div class='text-block'>" + data['content']+"<div class='comment-area'></div>"+buttonBlock+"</div></div>");
+      $(".print-btn").button();
+      $('.comment-btn').button();
       $("#text-field").accordion("destroy");
       $("#text-field").accordion({
         collapsible: true,
@@ -322,7 +324,8 @@
     $(".btn-next-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
-      //$('.comment-btn').button('destroy');
+      $('.comment-btn').button('destroy');
+      $('.print-btn').button('destroy');
       $(".group:first").find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
       var content = $(".group:first").html();
       $("div").remove(".group:first");
@@ -333,7 +336,8 @@
     $(".btn-prev-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
-      //$('.comment-btn').button('destroy');
+      $('.comment-btn').button('destroy');
+      $('.print-btn').button('destroy');
       $('.group:first').find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
       var content =  $(".group:last").html();
       $("div").remove(".group:last");
@@ -341,12 +345,10 @@
       $("#text-field").empty();
       $("#text-field").append("<div class='group'>"+content+"<div>");
       $("#text-field").append(rest);
-
       $("#text-field").accordion("refresh");
-
     });
 
-    /*var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
+    var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
     $("#text-field").on('click','.comment-btn',function(e){
       $(this).parents('.text-block').append(inputField);
       $('.comment-btn').button( "disable" );
@@ -378,20 +380,30 @@
     })
 
     $( "#text-field" ).on( "accordionactivate", function( event, ui ) {
-      //$('.comment-btn').button();
+      $('.comment-btn').button();
+      $('.print-btn').button();
       $("#text-field").find('.inputField').remove();
       $('.comment-btn').button("enable");
-    });*/
+    });
 
     $("#text-field").on('click','h3',function(e){
-      var content = '';
-      var test = $(this).parent().prevAll();
-      $.each(test, function(index, val) {
-         content += "<div class='group'>"+val.innerHTML+"</div>";
-      });
-      console.log(content);
+      if($(this).hasClass('ui-accordion-header-active')){
+        $('.comment-btn').button('destroy');
+        $('.print-btn').button('destroy');
+        var content = '';
+        var test = $(this).parent().prevAll();
+        $.each(test, function(index, val) {
+           content = "<div class='group'>"+val.innerHTML+"</div>" + content;
+           $("div").remove(".group:first");
+        });
+        var rest = $("#text-field").html();
+        $("#text-field").empty();
+        $("#text-field").append(rest);
+        $("#text-field").append(content);
+        $("#text-field").accordion("refresh");
+        $("#text-field").accordion( "option", "active", 0);
+      }
     })
-
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}

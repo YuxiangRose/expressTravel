@@ -4865,3 +4865,42 @@ Stack trace:
 #16 C:\xampp\htdocs\Tickets\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(641): Stack\StackedHttpKernel->handle(Object(Illuminate\Http\Request))
 #17 C:\xampp\htdocs\Tickets\public\index.php(49): Illuminate\Foundation\Application->run()
 #18 {main} [] []
+[2015-08-08 20:18:11] home.ERROR: exception 'InvalidArgumentException' with message 'Command "migrate:create_notes_table" is not defined.
+
+Did you mean one of these?
+    migrate:reset
+    migrate:refresh
+    migrate:rollback
+    migrate:install
+    migrate
+    migrate:make
+    migrate:publish' in C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php:564
+Stack trace:
+#0 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(190): Symfony\Component\Console\Application->find('migrate:create_...')
+#1 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(124): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#2 C:\xampp\htdocs\tickets\artisan(59): Symfony\Component\Console\Application->run()
+#3 {main} [] []
+[2015-08-08 20:27:46] home.ERROR: exception 'InvalidArgumentException' with message 'Command "reset" is not defined.
+
+Did you mean this?
+    migrate:reset' in C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php:564
+Stack trace:
+#0 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(190): Symfony\Component\Console\Application->find('reset')
+#1 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(124): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#2 C:\xampp\htdocs\tickets\artisan(59): Symfony\Component\Console\Application->run()
+#3 {main} [] []
+[2015-08-08 20:28:09] home.ERROR: exception 'InvalidArgumentException' with message 'Command "migratephp" is not defined.
+
+Did you mean one of these?
+    migrate
+    migrate:reset
+    migrate:refresh
+    migrate:rollback
+    migrate:install
+    migrate:make
+    migrate:publish' in C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php:564
+Stack trace:
+#0 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(190): Symfony\Component\Console\Application->find('migratephp')
+#1 C:\xampp\htdocs\tickets\vendor\symfony\console\Symfony\Component\Console\Application.php(124): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#2 C:\xampp\htdocs\tickets\artisan(59): Symfony\Component\Console\Application->run()
+#3 {main} [] []
