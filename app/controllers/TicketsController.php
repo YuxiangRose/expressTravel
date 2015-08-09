@@ -97,14 +97,14 @@ class TicketsController extends BaseController {
      */
 	public function search(){
 		$data = array();
-		$this->searchReportNullValidation($_POST['ticketNumber'],
+		$this->processPostData($_POST['ticketNumber'],
 										   $_POST['passengerName'],
 										   $_POST['rloc'],
 										   $_POST['fromDate'],
 										   $_POST['toDate']);
 
 		$query = Document::query();
-		$this->searchReportQuery($query);
+		$this->getQuery($query);
 		$model = $query->get();
 
 		$index = 0;
@@ -257,18 +257,15 @@ class TicketsController extends BaseController {
 		$data['paxName'] = $nextModel->paxName;
 		$data['airlineName'] = $nextModel->airlineName;
 
-		echo json_encode($data);
-	}
+		//Use next ticketNumber to find the notes in the notes table and put them into an array
+		$comments = array();
+		$notes = Note::where('ticketNumber','=',$nextModel->ticketNumber)->get();
+		foreach ($notes as $key => $value) {
+			$comments[$key] = $value->note;
+		}
+		$data['comments'] = $comments;
 
-	/**
-	 * function dateQuery()
-	 * Used in searchReportQuery() where multi queries that meet the requirement will run
-	 * @param $query			when requirement met, this variable will contain the queries needs to run
-	 * @param $newFromDate		from date from date picker
-	 * @param $newToDate		to date	from date picker
-     */
-	public function dateQuery($query, $newFromDate, $newToDate){
-		return $query->whereBetween('dateString', array($newFromDate, $newToDate));
+		echo json_encode($data);
 	}
 
 	/**
@@ -282,7 +279,7 @@ class TicketsController extends BaseController {
 	 * @param $fromDate				$_POST['fromDate']
 	 * @param $toDate				$_POST['toDate']
      */
-	public function searchReportNullValidation($ticketNumber, $passengerName, $rloc , $fromDate, $toDate){
+	public function processPostData($ticketNumber, $passengerName, $rloc , $fromDate, $toDate){
 		/* Check if ticket number entered is not null and is number */
 		if(($ticketNumber != null) && (is_numeric($ticketNumber))){
 			$this->ticketNumber = trim($ticketNumber);
@@ -333,7 +330,7 @@ class TicketsController extends BaseController {
 	 * If the variables aren't null a query condition will be added into the final query when it runs
 	 * @param $query		stores all the conditions
      */
-	public function searchReportQuery($query){
+	public function getQuery($query){
 		// Query ticketNumber input if not null
 		if($this->ticketNumber != null){
 			$query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
@@ -349,30 +346,15 @@ class TicketsController extends BaseController {
 				->where('paxName','LIKE','%'.$this->mid.'%')
 				->where('paxName','LIKE','%'.$this->last.'%');
 		}
-		/* Query fromDate and toDate if null or not null (combination of possibilities) */
-//		// If both date form and to input are empty
-//		// Both dates will be set as today
-//		if(($newFromDate == null) && ($newToDate == null)){
-//			$newFromDate = date('Ymd');
-//			$newToDate = date('Ymd');
-//			$this->dateQuery($query, $newFromDate, $newToDate);
-//		}
-//		// If date from is null it'll search the database to find the oldest date
-//		// Query will be the oldest date(fromDate) to the toDate input entered
-//		else
-		if(($this->newFromDate == null) && ($this->newToDate != null)){
-			$oldestDate = Document::orderBy('dateString', 'asc')->first();
-			$this->newFromDate = $oldestDate->dateString;
-			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
+
+		// Query dates bigger than selected dates
+		if($this->newFromDate != null){
+			$query = $query->where('dateString', '>=', $this->newFromDate);
 		}
-		// If date to is null it'll set the toDate to today
-		elseif(($this->newToDate == null) && ($this->newFromDate != null)){
-			$this->newToDate = date('Ymd');
-			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
-		}
-		// Query the ticket in between the dates if both not null
-		elseif(($this->newFromDate != null) && ($this->newToDate != null)){
-			$this->dateQuery($query, $this->newFromDate, $this->newToDate);
+
+		// Query dates smaller than selected dates
+		if($this->newToDate != null){
+			$query = $query->where('dateString', '<=', $this->newToDate);
 		}
 	}
 
@@ -384,14 +366,14 @@ class TicketsController extends BaseController {
 	 * @return string		string of the contents
      */
 	public function report(){
-		$this->searchReportNullValidation($_POST['ticketNumber'],
-			$_POST['passengerName'],
-			$_POST['rloc'],
-			$_POST['date-from-field'],
-			$_POST['date-to-field']);
+		$this->processPostData(trim($_POST['ticketNumber']),
+			trim($_POST['passengerName']),
+			trim($_POST['rloc']),
+			trim($_POST['date-from-field']),
+			trim($_POST['date-to-field']));
 
 		$query = Document::query();
-		$this->searchReportQuery($query);
+		$this->getQuery($query);
 		$model = $query->get();
 
 		if(sizeof($model) > 0) {

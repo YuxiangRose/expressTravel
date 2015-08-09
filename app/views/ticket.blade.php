@@ -112,19 +112,22 @@
           $('.btn-prev-record').button( "disable" );
           $('.btn-next-record').button( "disable" );
           event.preventDefault();
+
           var noError = true;
-          var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+          var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
           var passengerName = $.trim($("input[name='passengerName']").val());
-          var rloc = $.trim($("input[name='rloc']").val());
-          var fromDate = $.trim($("input[name='date-from-field']").val());
-          var toDate = $.trim($("input[name='date-to-field']").val());
-          if($.isNumeric(ticketNumber) || ticketNumber==""){
+          var rloc          = $.trim($("input[name='rloc']").val());
+          var fromDate      = $.trim($("input[name='date-from-field']").val());
+          var toDate        = $.trim($("input[name='date-to-field']").val());
+
+          if ($.isNumeric(ticketNumber) || ticketNumber == "") {
               noError = true;
           }else{
               noError = false;
               $("input[name='ticketNumber']").val('');
               alert("please enter a number");
           }
+
           if(noError){
               $("#text-field").empty();
               $.ajax({
@@ -308,7 +311,12 @@
      * */
     function appendDataPrevNext(data, pn){
       $("#text-field").empty();
-      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + data['dateOfFile'] + "</span><span>" + data['paxName'] + "</span><span>" + data['airlineName'] + "</span></h3><div class='text-block'>" + data['content']+"<div class='comment-area'></div>"+buttonBlock+"</div></div>");
+//      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + data['dateOfFile'] + "</span><span>" + data['paxName'] + "</span><span>" + data['airlineName'] + "</span></h3><div class='text-block'>" + data['content']+"<div class='comment-area'></div>"+buttonBlock+"</div></div>");
+      var comment = '';
+      $.each(data['comments'],function(index,note){
+          comment += "<div class='single-comment'><p>"+note+"</p></div>"
+      });
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+data['dateOfFile']+"</span><span>"+data['paxName']+"</span><span>"+data['airlineName']+"</span></h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
       $(".print-btn").button();
       $('.comment-btn').button();
       $("#text-field").accordion("destroy");
