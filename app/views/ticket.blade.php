@@ -157,44 +157,48 @@
                             $('.btn-prev-record').button( "enable" );
                             $('.btn-next-record').button( "enable" );
                       }else{
-                        $.each(data,function(index,item) {
-                          var comment = '';
-                          $.each(item['comments'],function(index,note){
-                            comment += "<div class='single-comment'><p>"+note+"</p></div>"
+                        if(data['error'] != null){
+                          $("#text-field").append("<div class='group'>"+data['error']+"</div>");
+                        }else{
+                          $.each(data,function(index,item) {
+                            var comment = '';
+                            $.each(item['comments'],function(index,note){
+                              comment += "<div class='single-comment'><p>"+note+"</p></div>"
+                            });
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $(".print-btn").button();
+                            $(".comment-btn").button();
+                            $( "#text-field" ).accordion( "destroy" );
+                            $( "#text-field" ).accordion({
+                                collapsible: true,
+                                header: "> div > h3",
+                                animate: 0,
+                            });
+                            globalSystemName = item['systemName'];
+                            globalTicketNumber = item['ticketNumber'];
+                            //Enables all buttons first and use the codes below to check which one should be disabled
+                            $('.btn-prev').button( "enable" );
+                            $('.btn-next').button( "enable" );
+                            /* Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
+                            //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
+                            //Disable-next - The record pulled has reached the end of the record
+                            //Disable-prev - The record pulled has reached the earliest of the record
+                            if(item['disable-both'] == 'disable-both'){
+                                $('.btn-prev').button( "disable" );
+                                $('.btn-next').button( "disable" );
+                            }else if(item['disable-next'] == 'disable-next'){
+                                $('.btn-next').button( "disable" );
+                            }else if(item['disable-prev'] == 'disable-prev'){
+                                $('.btn-prev').button( "disable" );
+                            }
                           });
-                          $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
-                          $(".print-btn").button();
-                          $(".comment-btn").button();
-                          $( "#text-field" ).accordion( "destroy" );
-                          $( "#text-field" ).accordion({
-                              collapsible: true,
-                              header: "> div > h3",
-                              animate: 0,
-                          });
-                          globalSystemName = item['systemName'];
-                          globalTicketNumber = item['ticketNumber'];
-                          //Enables all buttons first and use the codes below to check which one should be disabled
-                          $('.btn-prev').button( "enable" );
-                          $('.btn-next').button( "enable" );
-                          /* Checks which buttons (prev/next) should be disabled and will override the enabled if needed */
-                          //Disable-both - Only has ONE ticketNumber within the same systemName which is rare but still possible
-                          //Disable-next - The record pulled has reached the end of the record
-                          //Disable-prev - The record pulled has reached the earliest of the record
-                          if(item['disable-both'] == 'disable-both'){
-                              $('.btn-prev').button( "disable" );
-                              $('.btn-next').button( "disable" );
-                          }else if(item['disable-next'] == 'disable-next'){
-                              $('.btn-next').button( "disable" );
-                          }else if(item['disable-prev'] == 'disable-prev'){
-                              $('.btn-prev').button( "disable" );
-                          }
-                        });
+                        }
                       }
-                      $("input[name='ticketNumber']").val('');
-                      $("input[name='passengerName']").val('');
-                      $("input[name='rloc']").val('');
-                      $("input[name='date-from-field']").val('');
-                      $("input[name='date-to-field']").val('');
+                    $("input[name='ticketNumber']").val('');
+                    $("input[name='passengerName']").val('');
+                    $("input[name='rloc']").val('');
+                    $("input[name='date-from-field']").val('');
+                    $("input[name='date-to-field']").val('');
                   }
               });
           }

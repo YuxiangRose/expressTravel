@@ -184,7 +184,7 @@ class TicketsController extends BaseController {
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
+			$data['error'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
 
 		echo json_encode($data);
