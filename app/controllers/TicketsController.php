@@ -369,35 +369,31 @@ class TicketsController extends BaseController {
 	 * function report()
 	 * A function that is similar to search()
 	 * But this function will return in a new page for print and report purpose.
-	 * @return string		json
+	 * @return string		string of the contents
      */
 	public function report(){
-		$data = array();
 		$this->searchReportNullValidation($_POST['ticketNumber'],
 			$_POST['passengerName'],
 			$_POST['rloc'],
-			$_POST['fromDate'],
-			$_POST['toDate']);
+			$_POST['date-from-field'],
+			$_POST['date-to-field']);
 
 		$query = Document::query();
 		$this->searchReportQuery($query);
 		$model = $query->get();
 
-		$index = 0;
 		if(sizeof($model) > 0) {
+			$longString = null;
 			foreach ($model as $key => $value) {
 				$document = $value->getAttributes();
-				$data[$index]['content'] = $document['fileContent'];
-				$data[$index]['dateOfFile'] = $document['dateOfFile'];
-				$data[$index]['paxName'] = $document['paxName'];
-				$data[$index]['airlineName'] = $document['airlineName'];
-				$data[$index]['systemName'] = $document['systemName'];
-				$data[$index]['ticketNumber'] = $document['ticketNumber'];
-				$index++;
+				$content = "<div>" . $document['fileContent'] . "</div><hr>";
+				$longString .= $content;
 			}
+		}else{
+			$longString = 'Sorry the document does not exist, or hasn not been update yet, please click update and try again.';
 		}
 
-		return json_encode($data);
+		return View::make('date', array('long' => $longString));
 	}
 
 	public function saveComment(){

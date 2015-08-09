@@ -15,36 +15,38 @@
     <h3>{{$num}} files have been convert and updated.</h3>
   </div>
   <div class="sub-container">
-    <div class="form-field">
-      <label>Ticket Number : </label>
-      <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
-    </div>
-    <div class="form-field">
-      <label>Passenger Name : </label>
-      <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter passenger name">
-    </div>
-    <div class="form-field">
-      <label>RLOC : </label>
-      <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
-    </div>
-    <div class="form-field">
-      <label for="from">Date From</label>
-      <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
-    </div>
-    <div class="form-field">
-      <label for="to">Date To</label>
-      <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
-    </div>
+      <form action="/report" method="POST" target="_blank">
+        <div class="form-field">
+          <label>Ticket Number : </label>
+          <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
+        </div>
+        <div class="form-field">
+          <label>Passenger Name : </label>
+          <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter passenger name">
+        </div>
+        <div class="form-field">
+          <label>RLOC : </label>
+          <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
+        </div>
+        <div class="form-field">
+          <label for="from">Date From</label>
+          <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
+        </div>
+        <div class="form-field">
+          <label for="to">Date To</label>
+          <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
+        </div>
 
-    <div class="button-field">
-      <input type="submit" class="btn-search"value="Search">
-      <button class="btn-update">Update</button>
-      <button class="btn-prev" name="previous">PREV</button>
-      <button class="btn-next" name="next">NEXT</button>
-      <button class="btn-next-record" name="nextRecord">Next Record</button>
-      <button class="btn-prev-record" name="prevRecord">Prev Record</button>
-      <button class="btn-report" name="report">Report</button>
-    </div> <!---end button-field -->
+        <div class="button-field">
+          <input type="submit" class="btn-search"value="Search">
+          <button class="btn-update">Update</button>
+          <button class="btn-prev" name="previous">PREV</button>
+          <button class="btn-next" name="next">NEXT</button>
+          <button class="btn-next-record" name="nextRecord">Next Record</button>
+          <button class="btn-prev-record" name="prevRecord">Prev Record</button>
+          <button class="btn-report" type="submit">Report</button>
+        </div> <!---end button-field -->
+      </form>
 
     <input type="hidden" name="ticketHolder" value="">
   </div><!--end sub-container -->
@@ -408,52 +410,73 @@
       /*****************/
       /* Report Record */
       /*****************/
-      $('.btn-report').click(function(e){
-          $('.btn-prev').button( "disable" );
-          $('.btn-next').button( "disable" );
-          $('.btn-prev-record').button( "disable" );
-          $('.btn-next-record').button( "disable" );
-          e.preventDefault();
-          var noError = true;
+      $('form').submit(function(event){
           var ticketNumber = $.trim($("input[name='ticketNumber']").val());
-          var passengerName = $.trim($("input[name='passengerName']").val());
-          var rloc = $.trim($("input[name='rloc']").val());
-          var fromDate = $.trim($("input[name='date-from-field']").val());
-          var toDate = $.trim($("input[name='date-to-field']").val());
+//          var passengerName = $.trim($("input[name='passengerName']").val());
+//          var rloc = $.trim($("input[name='rloc']").val());
+//          var fromDate = $.trim($("input[name='date-from-field']").val());
+//          var toDate = $.trim($("input[name='date-to-field']").val());
+
+          var noError = true;
+
           if($.isNumeric(ticketNumber) || ticketNumber==""){
               noError = true;
           }else{
               noError = false;
               $("input[name='ticketNumber']").val('');
               alert("please enter a number");
+              event.preventDefault();
           }
           if(noError){
-              $.ajax({
-                  method: "post",
-                  url: "/report",
-                  dataType: "json",
-                  data: {ticketNumber: ticketNumber, passengerName: passengerName, rloc: rloc, fromDate: fromDate, toDate: toDate},
-                  success: function(data){
-                      if(jQuery.isEmptyObject(data)){
-                          $("#text-field").empty();
-                          $("#text-field").append("<div class='text-block'>Sorry the document does not exist, or has not been update yet, please click update and try again.</div>");
-                      }else {
-                          $("#text-field").empty();
-                          $("#text-field").append("<button class='print-btn'>Print</button>");
-                          $.each(data, function (index, item) {
-                              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + item['dateOfFile'] + "</span><span>" + item['paxName'] + "</span><span>" + item['airlineName'] + "</span></h3><div class='text-block'>" + item['content'] + "</div></div>");
-                          });
-                          $("#text-field").append("<button class='print-btn'>Print</button>");
-                      }
-                  }
-              });
+              return;
           }
-          $("input[name='ticketNumber']").val('');
-          $("input[name='passengerName']").val('');
-          $("input[name='rloc']").val('');
-          $("input[name='date-from-field']").val('');
-          $("input[name='date-to-field']").val('');
-      }); // end btn-report
+      });
+//      $('.btn-report').click(function(e){
+//          $('.btn-prev').button( "disable" );
+//          $('.btn-next').button( "disable" );
+//          $('.btn-prev-record').button( "disable" );
+//          $('.btn-next-record').button( "disable" );
+//          e.preventDefault();
+//          var noError = true;
+//          var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+//          var passengerName = $.trim($("input[name='passengerName']").val());
+//          var rloc = $.trim($("input[name='rloc']").val());
+//          var fromDate = $.trim($("input[name='date-from-field']").val());
+//          var toDate = $.trim($("input[name='date-to-field']").val());
+//          if($.isNumeric(ticketNumber) || ticketNumber==""){
+//              noError = true;
+//          }else{
+//              noError = false;
+//              $("input[name='ticketNumber']").val('');
+//              alert("please enter a number");
+//          }
+//          if(noError){
+//              $.ajax({
+//                  method: "post",
+//                  url: "/report",
+//                  dataType: "json",
+//                  data: {ticketNumber: ticketNumber, passengerName: passengerName, rloc: rloc, fromDate: fromDate, toDate: toDate},
+//                  success: function(data){
+//                      if(jQuery.isEmptyObject(data)){
+//                          $("#text-field").empty();
+//                          $("#text-field").append("<div class='text-block'>Sorry the document does not exist, or has not been update yet, please click update and try again.</div>");
+//                      }else {
+//                          $("#text-field").empty();
+//                          $("#text-field").append("<button class='print-btn'>Print</button>");
+//                          $.each(data, function (index, item) {
+//                              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + item['dateOfFile'] + "</span><span>" + item['paxName'] + "</span><span>" + item['airlineName'] + "</span></h3><div class='text-block'>" + item['content'] + "</div></div>");
+//                          });
+//                          $("#text-field").append("<button class='print-btn'>Print</button>");
+//                      }
+//                  }
+//              });
+//          }
+//          $("input[name='ticketNumber']").val('');
+//          $("input[name='passengerName']").val('');
+//          $("input[name='rloc']").val('');
+//          $("input[name='date-from-field']").val('');
+//          $("input[name='date-to-field']").val('');
+//      }); // end btn-report
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}
