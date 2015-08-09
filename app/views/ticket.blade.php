@@ -404,6 +404,56 @@
         $("#text-field").accordion( "option", "active", 0);
       }
     })
+
+      /*****************/
+      /* Report Record */
+      /*****************/
+      $('.btn-report').click(function(e){
+          $('.btn-prev').button( "disable" );
+          $('.btn-next').button( "disable" );
+          $('.btn-prev-record').button( "disable" );
+          $('.btn-next-record').button( "disable" );
+          e.preventDefault();
+          var noError = true;
+          var ticketNumber = $.trim($("input[name='ticketNumber']").val());
+          var passengerName = $.trim($("input[name='passengerName']").val());
+          var rloc = $.trim($("input[name='rloc']").val());
+          var fromDate = $.trim($("input[name='date-from-field']").val());
+          var toDate = $.trim($("input[name='date-to-field']").val());
+          if($.isNumeric(ticketNumber) || ticketNumber==""){
+              noError = true;
+          }else{
+              noError = false;
+              $("input[name='ticketNumber']").val('');
+              alert("please enter a number");
+          }
+          if(noError){
+              $.ajax({
+                  method: "post",
+                  url: "/report",
+                  dataType: "json",
+                  data: {ticketNumber: ticketNumber, passengerName: passengerName, rloc: rloc, fromDate: fromDate, toDate: toDate},
+                  success: function(data){
+                      if(jQuery.isEmptyObject(data)){
+                          $("#text-field").empty();
+                          $("#text-field").append("<div class='text-block'>Sorry the document does not exist, or has not been update yet, please click update and try again.</div>");
+                      }else {
+                          $("#text-field").empty();
+                          $("#text-field").append("<button class='print-btn'>Print</button>");
+                          $.each(data, function (index, item) {
+                              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>" + item['dateOfFile'] + "</span><span>" + item['paxName'] + "</span><span>" + item['airlineName'] + "</span></h3><div class='text-block'>" + item['content'] + "</div></div>");
+                          });
+                          $("#text-field").append("<button class='print-btn'>Print</button>");
+                      }
+                  }
+              });
+          }
+          $("input[name='ticketNumber']").val('');
+          $("input[name='passengerName']").val('');
+          $("input[name='rloc']").val('');
+          $("input[name='date-from-field']").val('');
+          $("input[name='date-to-field']").val('');
+      }); // end btn-report
   }); //end document ready
 </script>
 {{-- END PAGE LEVEL JAVASCRIPT --}}
