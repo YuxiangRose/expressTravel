@@ -1,0 +1,4 @@
+[2015-08-08 23:00:46] home.ERROR: exception 'Symfony\Component\Debug\Exception\FatalErrorException' with message 'syntax error, unexpected '$data' (T_VARIABLE)' in C:\xampp\htdocs\tickets\app\controllers\TicketsController.php:162
+Stack trace:
+#0 [internal function]: Illuminate\Exception\Handler->handleShutdown()
+#1 {main} [] []
