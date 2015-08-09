@@ -153,17 +153,29 @@ class TicketsController extends BaseController {
 			$data[$index]['systemName'] = $model[0]['systemName'];
 			$data[$index]['ticketNumber'] = $model[0]['ticketNumber'];
 
+			$comments = array();
+			$notes = Note::where('ticketNumber','=',$model[0]['ticketNumber'])->get();
+			foreach ($notes as $key => $value) {
+				$comments[$key] = $value->note;
+			}
+			$data[$index]['comments'] = $comments;
 		}else if(sizeof($model)>1){
 
 			foreach ($model as $key => $value) {
-				$document = $value->getAttributes();
-				//if($document){
-				$data[$index]['content'] = $document['fileContent'];
-				$data[$index]['dateOfFile'] = $document['dateOfFile'];
-				$data[$index]['paxName'] = $document['paxName'];
-				$data[$index]['airlineName'] = $document['airlineName'];
-				$data[$index]['systemName'] = $document['systemName'];
-				$data[$index]['ticketNumber'] = $document['ticketNumber'];
+				$data[$index]['content'] = $value->fileContent;
+				$data[$index]['dateOfFile'] = $value->dateOfFile;
+				$data[$index]['paxName'] = $value->paxName;
+				$data[$index]['airlineName'] = $value->airlineName;
+				$data[$index]['systemName'] = $value->systemName;
+				$data[$index]['ticketNumber'] =$value->ticketNumber;
+
+				$comments = array();
+				$notes = Note::where('ticketNumber','=',$value->ticketNumber)->get();
+				foreach ($notes as $key => $value) {
+					$comments[$key] = $value->note;
+				}
+				$data[$index]['comments'] = $comments;
+
 				//}else{
 					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
 				//}
@@ -172,7 +184,7 @@ class TicketsController extends BaseController {
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data[$index]['content'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
+			$data['error'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
 		}
 
 		echo json_encode($data);
