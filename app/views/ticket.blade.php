@@ -45,7 +45,7 @@
           <button class="btn-reset">Reset</button>
           <button class="btn-prev" name="previous"> << PREV</button>
           <button class="btn-next" name="next">NEXT >> </button>
-          <select name="choose-systemName" id="choose-systemName">
+          <select name="system-selector" id="system-selector">
               <option value="ALL">ALL</option>
               <option value="SABRE">SABRE</option>
               <option value="AMADEUS">AMADEUS</option>
@@ -133,6 +133,9 @@
     $('.btn-next').attr('disabled','disabled');
     $('.btn-prev-record').attr('disabled','disabled');
     $('.btn-next-record').attr('disabled','disabled');
+    $('#system-selector').selectmenu({
+      width: 145
+    });
 
     setTimeout(function() {
         $('.update-info').slideUp('slow');
@@ -162,7 +165,7 @@
           var rloc          = $.trim($("input[name='rloc']").val());
           var fromDate      = $.trim($("input[name='date-from-field']").val());
           var toDate        = $.trim($("input[name='date-to-field']").val());
-          var systemName    = $("#choose-systemName").val();
+          var systemName    = $("#system-selector").val();
 
           if ($.isNumeric(ticketNumber) || ticketNumber == "") {
               noError = true;
