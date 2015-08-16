@@ -63,7 +63,6 @@
 <script>
   $(document).ready(function() {
     var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
-<<<<<<< HEAD
     /* Enable datepicker widget */
     // Sets both datepicker not able to select any date pass today
     // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
@@ -77,8 +76,6 @@
       },
       maxDate: "0"
     });
-=======
->>>>>>> b84b3e264171de12793fc8e7e5431d567bdebfcc
 
 /**********************************************************************/
       /* Reference for future use*/
