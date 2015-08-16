@@ -20,6 +20,7 @@
 
         /**
          * Data constructor.
+         * Using the POST data passed by the input and pass them into the setters to process the POST data
          *
          * @param $ticketNumber
          * @param $passengerName
@@ -181,24 +182,40 @@
             }
         }
 
+
         /**
-         * function processPostData()
+         * function getQuery()
          * Used in search() and report()
-         * Checks what needs to be done when the variables are null or not
-         * The variables will then be stored as global variables
-         * @param $ticketNumber			$_POST['ticketNumber']
-         * @param $passengerName		$_POST['passengerName']
-         * @param $rloc					$_POST['rloc']
-         * @param $fromDate				$_POST['fromDate']
-         * @param $toDate				$_POST['toDate']
+         * If the variables aren't null a query condition will be added into the final query when it runs
+         * @param $query		stores all the conditions
          */
-//        public function processPostData($ticketNumber, $passengerName, $rloc , $fromDate, $toDate){
-//            $this->setTicketNumber($ticketNumber);
-//            $this->setPassengerName($passengerName);
-//            $this->setRloc($rloc);
-//            $this->setNewFromDate($fromDate);
-//            $this->setNewToDate($toDate);
-//        }
+        public function getQuery($query){
+            // Query ticketNumber input if not null
+            if($this->ticketNumber != null){
+                $query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
+            }
+            // Query rloc input if not null
+            if($this->rloc != null){
+                $query = $query->where('rloc', 'LIKE', '%'.$this->rloc.'%');
+            }
+            // Query passengerName if not null
+            // Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
+            if($this->passengerName != null){
+                $query = $query->where('paxName', 'LIKE', '%'.$this->first.'%')
+                    ->where('paxName','LIKE','%'.$this->mid.'%')
+                    ->where('paxName','LIKE','%'.$this->last.'%');
+            }
+
+            // Query dates bigger than selected dates
+            if($this->newFromDate != null){
+                $query = $query->where('dateString', '>=', $this->newFromDate);
+            }
+
+            // Query dates smaller than selected dates
+            if($this->newToDate != null){
+                $query = $query->where('dateString', '<=', $this->newToDate);
+            }
+        }
 
 
     }

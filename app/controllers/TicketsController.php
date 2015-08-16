@@ -84,21 +84,14 @@ class TicketsController extends BaseController {
      */
 	public function search(){
 		$data = array();
-		var_dump(new DataProcess(null,null,null,null,null));die;
 		$dataProcess = new DataProcess($_POST['ticketNumber'],
 			$_POST['passengerName'],
 			$_POST['rloc'],
 			$_POST['fromDate'],
 			$_POST['toDate']);
-		var_dump($dataProcess);die;
-//		$this->processPostData($_POST['ticketNumber'],
-//										   $_POST['passengerName'],
-//										   $_POST['rloc'],
-//										   $_POST['fromDate'],
-//										   $_POST['toDate']);
 
 		$query = Document::query();
-		$this->getQuery($query);
+		$dataProcess->getQuery($query);
 		$model = $query->get();
 
 		$index = 0;
@@ -108,9 +101,9 @@ class TicketsController extends BaseController {
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
 
-			if(($this->newFromDate != null) && ($this->newToDate != null)){
+			if(($dataProcess->getNewFromDate() != null) && ($dataProcess->getNewToDate() != null)){
 				// If
-				$getAllModel = Document::whereBetween('dateString', array($this->newFromDate, $this->newToDate))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+				$getAllModel = Document::whereBetween('dateString', array($dataProcess->getNewFromDate(), $dataProcess->getNewToDate()))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
 			}else{
 				//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
 				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
@@ -122,7 +115,7 @@ class TicketsController extends BaseController {
 			$allIndex = [];
 			if(sizeof($getAllModel) > 0){
 				foreach($getAllModel as $key => $value){
-					if(($value->ticketNumber) == $this->ticketNumber){
+					if(($value->ticketNumber) == $dataProcess->getTicketNumber()){
 						$index = $key;
 					}
 					$allIndex[] = $key;
@@ -264,39 +257,7 @@ class TicketsController extends BaseController {
 
 
 
-	/**
-	 * function getQuery()
-	 * Used in search() and report()
-	 * If the variables aren't null a query condition will be added into the final query when it runs
-	 * @param $query		stores all the conditions
-     */
-	public function getQuery($query){
-		// Query ticketNumber input if not null
-		if($this->ticketNumber != null){
-			$query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
-		}
-		// Query rloc input if not null
-		if($this->rloc != null){
-			$query = $query->where('rloc', 'LIKE', '%'.$this->rloc.'%');
-		}
-		// Query passengerName if not null
-		// Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
-		if($this->passengerName != null){
-			$query = $query->where('paxName', 'LIKE', '%'.$this->first.'%')
-				->where('paxName','LIKE','%'.$this->mid.'%')
-				->where('paxName','LIKE','%'.$this->last.'%');
-		}
 
-		// Query dates bigger than selected dates
-		if($this->newFromDate != null){
-			$query = $query->where('dateString', '>=', $this->newFromDate);
-		}
-
-		// Query dates smaller than selected dates
-		if($this->newToDate != null){
-			$query = $query->where('dateString', '<=', $this->newToDate);
-		}
-	}
 
 
 	/**
@@ -306,14 +267,14 @@ class TicketsController extends BaseController {
 	 * @return string		string of the contents
      */
 	public function report(){
-		$this->processPostData(trim($_POST['ticketNumber']),
+		$dataProcess = new DataProcess(trim($_POST['ticketNumber']),
 			trim($_POST['passengerName']),
 			trim($_POST['rloc']),
 			trim($_POST['date-from-field']),
 			trim($_POST['date-to-field']));
 
 		$query = Document::query();
-		$this->getQuery($query);
+		$dataProcess->getQuery($query);
 		$model = $query->get();
 
 		if(sizeof($model) > 0) {
