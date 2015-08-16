@@ -9,42 +9,43 @@
 @section('contents')
 <div class="container">
   <div class="title">
-    <h1>Ticket search</h1>
+    <h1>E-Ticket Search</h1>
   </div>
   <div class="update-info">
-    <h3>{{$num}} files have been convert and updated.</h3>
+    <h3>{{$num}} file(s) have been converted and updated.</h3>
   </div>
   <div class="sub-container">
       <form action="/report" method="POST" target="_blank">
-        <div class="form-field">
-          <label>Ticket Number : </label>
-          <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Please enter ticket number">
+        <div class="input-group">
+          <div class="form-field">
+            <label>Ticket Number without Airline Code :</label>
+            <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="The 10 Digitals Tkt number ">
+          </div>
+          <div class="form-field">
+            <label>Passenger Name : </label>
+            <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter Pax name">
+          </div>
+          <div class="form-field">
+            <label>Record Locator : </label>
+            <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
+          </div>
+          <div class="form-field">
+            <label for="from">Date of Issue From</label>
+            <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
+          </div>
+          <div class="form-field">
+            <label for="to">Date of Issue To</label>
+            <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
+          </div>
         </div>
-        <div class="form-field">
-          <label>Passenger Name : </label>
-          <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter passenger name">
-        </div>
-        <div class="form-field">
-          <label>RLOC : </label>
-          <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
-        </div>
-        <div class="form-field">
-          <label for="from">Date From</label>
-          <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
-        </div>
-        <div class="form-field">
-          <label for="to">Date To</label>
-          <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
-        </div>
-
         <div class="button-field">
           <input type="submit" class="btn-search"value="Search">
           <button class="btn-update">Update</button>
-          <button class="btn-prev" name="previous">PREV</button>
-          <button class="btn-next" name="next">NEXT</button>
-          <button class="btn-next-record" name="nextRecord">Next Record</button>
-          <button class="btn-prev-record" name="prevRecord">Prev Record</button>
           <button class="btn-report" type="submit">Report</button>
+          <button class="btn-prev" name="previous"> << PREV</button>
+          <button class="btn-next" name="next">NEXT >> </button>
+          <button class="btn-next-record" name="nextRecord"> << Next Record</button>
+          <button class="btn-prev-record" name="prevRecord">Prev Record>></button>
         </div> <!---end button-field -->
       </form>
 
@@ -60,7 +61,7 @@
 @section('js')
 <script>
   $(document).ready(function() {
-    var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Comment</button></div>";
+    var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
     /* Enable datepicker widget */
     // Sets both datepicker not able to select any date pass today
     // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
