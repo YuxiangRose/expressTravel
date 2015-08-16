@@ -183,7 +183,7 @@
                             $.each(item['comments'],function(index,note){
                               comment += "<div class='single-comment'><p>"+note+"</p></div>"
                             });
-                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
                             });
                             $(".print-btn").button();
                             $('.comment-btn').button();
@@ -204,7 +204,7 @@
                             $.each(item['comments'],function(index,note){
                               comment += "<div class='single-comment'><p>"+note+"</p></div>"
                             });
-                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
                             $(".print-btn").button();
                             $(".comment-btn").button();
                             $( "#text-field" ).accordion( "destroy" );
@@ -246,7 +246,7 @@
       /* Only used inside search where only one record is found */
       function displaySingleDataFromSearch(data){
           $.each(data,function(index,item) {
-              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                   collapsible: true,
@@ -352,7 +352,7 @@
       $.each(data['comments'],function(index,note){
           comment += "<div class='single-comment'><p>"+note+"</p></div>"
       });
-      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span>"+data['dateOfFile']+"</span><span>"+data['paxName']+"</span><span>"+data['airlineName']+"</span></h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+data['dateOfFile']+"</span><span class='header-name'>"+data['paxName']+"</span><span class='header-airline'>"+data['airlineName']+"</span></h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
       $(".print-btn").button();
       $('.comment-btn').button();
       $("#text-field").accordion("destroy");

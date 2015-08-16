@@ -23,6 +23,10 @@ form .input-group{float: left; width: 500px;}
 	#text-field .block-hearder{margin: 0; float: left;width: 840px; padding: 5px 0 5px 30px;}
 	#text-field .text-block{background: none repeat scroll 0 0 white; padding: 5px 0 5px 30px; min-height: 440px; height: auto;float: left;width: 840px; overflow-x: hidden;}
 	#text-field .block-hearder span{margin: 0 0 0 30px;}
+		#text-field .block-hearder .ui-accordion-header-icon{margin: -8px 0 0; float: left;}
+		#text-field .block-hearder .header-date{float: left; height: 20px; width: 100px; color:#AF1F18;}
+		#text-field .block-hearder .header-name{float: left; height: 20px; width: 300px; color:#0969AF;}
+		#text-field .block-hearder .header-airline{float: left; height: 20px; width: 290px;color: #FAA523;}
 	#text-field .print-btn{float: right;}
 	#text-field pre{float: left; width: 620px;}
 	#text-field .comment-area{overflow-x: hidden; overflow-y: auto;float: left;width: 210px;margin: 10px 0 0;border-radius: 5px;height: 390px;background: none repeat scroll 0 0 #e3e3e3;}
