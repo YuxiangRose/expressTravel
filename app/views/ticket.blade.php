@@ -67,7 +67,7 @@
     // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
     // e.g. date-from-field has the value of 08/08/2015 then date-to-field cannot select any date before 08/08/2015, only can select between 08/08/2015 and today
     $( "#date-from-field" ).datepicker({
-//      defaultDate: "+1w",
+          defaultDate: "",
 //        changeMonth: true,
 //        numberOfMonths: 2,
       onClose: function( selectedDate ) {
