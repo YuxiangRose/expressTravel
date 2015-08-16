@@ -42,6 +42,7 @@
           <input type="submit" class="btn-search"value="Search">
           <button class="btn-update">Update</button>
           <button class="btn-report" type="submit">Report</button>
+          <button class="btn-reset">Reset</button>
           <button class="btn-prev" name="previous"> << PREV</button>
           <button class="btn-next" name="next">NEXT >> </button>
           <button class="btn-next-record" name="nextRecord"> << Next Record</button>
@@ -62,6 +63,7 @@
 <script>
   $(document).ready(function() {
     var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
+<<<<<<< HEAD
     /* Enable datepicker widget */
     // Sets both datepicker not able to select any date pass today
     // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
@@ -75,16 +77,45 @@
       },
       maxDate: "0"
     });
+=======
+>>>>>>> b84b3e264171de12793fc8e7e5431d567bdebfcc
 
-    $( "#date-to-field" ).datepicker({
-//      defaultDate: "+1w",
-//        changeMonth: true,
-//        numberOfMonths: 2,
-      onClose: function( selectedDate ) {
-        $( "#date-from-field" ).datepicker( "option", "maxDate", selectedDate ? selectedDate: "0");
-      },
-      maxDate: "0"
-    });
+/**********************************************************************/
+      /* Reference for future use*/
+//    /* Enable datepicker widget */
+//    // Sets both datepicker not able to select any date pass today
+//    // after date-from-field selected a date, date-to-field cannot select any date before the date date-from-field selected
+//    // e.g. date-from-field has the value of 08/08/2015 then date-to-field cannot select any date before 08/08/2015, only can select between 08/08/2015 and today
+//    $( "#date-from-field" ).datepicker({
+////      defaultDate: "+1w",
+////        changeMonth: true,
+////        numberOfMonths: 2,
+//      onClose: function( selectedDate ) {
+//        $( "#date-to-field" ).datepicker( "option", "minDate", selectedDate );
+//      },
+//      maxDate: "0"
+//    });
+//
+//    $( "#date-to-field" ).datepicker({
+////      defaultDate: "+1w",
+////        changeMonth: true,
+////        numberOfMonths: 2,
+//      onClose: function( selectedDate ) {
+//        $( "#date-from-field" ).datepicker( "option", "maxDate", selectedDate ? selectedDate: "0");
+//      },
+//      maxDate: "0"
+//    });
+/**********************************************************************/
+
+      /* Enable datepicker widget */
+      // Only restriction is cannot pick any date pass today
+      $( "#date-from-field" ).datepicker({
+          maxDate: "0"
+      });
+
+      $( "#date-to-field" ).datepicker({
+          maxDate: "0"
+      });
     /* End datepicker widget */
 
     $( "#text-field" ).accordion();
@@ -452,6 +483,11 @@
               return;
           }
       });
+
+      $('.btn-reset').on('click', function(){
+         alert('hi');
+      });
+
 //      $('.btn-report').click(function(e){
 //          $('.btn-prev').button( "disable" );
 //          $('.btn-next').button( "disable" );
