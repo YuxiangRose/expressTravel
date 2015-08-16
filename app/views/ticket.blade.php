@@ -45,6 +45,12 @@
           <button class="btn-reset">Reset</button>
           <button class="btn-prev" name="previous"> << PREV</button>
           <button class="btn-next" name="next">NEXT >> </button>
+          <select name="choose-systemName" id="choose-systemName">
+              <option value="ALL">ALL</option>
+              <option value="SABRE">SABRE</option>
+              <option value="AMADEUS">AMADEUS</option>
+              <option value="GALILEO">GALILEO</option>
+          </select>
           <button class="btn-next-record" name="nextRecord"> << Next Record</button>
           <button class="btn-prev-record" name="prevRecord">Prev Record>></button>
         </div> <!---end button-field -->
@@ -149,12 +155,14 @@
           $('.btn-next-record').button( "disable" );
           event.preventDefault();
 
+
           var noError = true;
           var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
           var passengerName = $.trim($("input[name='passengerName']").val());
           var rloc          = $.trim($("input[name='rloc']").val());
           var fromDate      = $.trim($("input[name='date-from-field']").val());
           var toDate        = $.trim($("input[name='date-to-field']").val());
+          var systemName    = $("#choose-systemName").val();
 
           if ($.isNumeric(ticketNumber) || ticketNumber == "") {
               noError = true;
@@ -174,7 +182,8 @@
                       passengerName:passengerName,
                       rloc:rloc,
                       fromDate:fromDate,
-                      toDate:toDate},
+                      toDate:toDate,
+                      systemName:systemName},
                   success: function(data){
                       if(data.length>1){
                           maxIndexForDoc = data.length -1;

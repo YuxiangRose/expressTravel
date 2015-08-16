@@ -88,7 +88,8 @@ class TicketsController extends BaseController {
 			$_POST['passengerName'],
 			$_POST['rloc'],
 			$_POST['fromDate'],
-			$_POST['toDate']);
+			$_POST['toDate'],
+			$_POST['systemName']);
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
@@ -271,7 +272,8 @@ class TicketsController extends BaseController {
 			trim($_POST['passengerName']),
 			trim($_POST['rloc']),
 			trim($_POST['date-from-field']),
-			trim($_POST['date-to-field']));
+			trim($_POST['date-to-field']),
+			trim($_POST['choose-systemName']));
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
