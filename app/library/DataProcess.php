@@ -206,15 +206,27 @@
                     ->where('paxName','LIKE','%'.$this->last.'%');
             }
 
-            // Query dates bigger than selected dates
-            if($this->newFromDate != null){
-                $query = $query->where('dateString', '>=', $this->newFromDate);
+//            // Query dates bigger than selected dates
+//            if($this->newFromDate != null){
+//                $query = $query->where('dateString', '>=', $this->newFromDate);
+//            }
+//
+//            // Query dates smaller than selected dates
+//            if($this->newToDate != null){
+//                $query = $query->where('dateString', '<=', $this->newToDate);
+//            }
+            /***********************/
+            /* Requested by client */
+            /***********************/
+            // If only one of the from or to date is selected and other one is blank then both dates should be the same date
+            if(($this->getNewFromDate() != null) && ($this->getNewToDate() == null)){
+                $query = $query->where('dateString', '=', $this->getNewFromDate());
+            }else if(($this->getNewFromDate() == null) && ($this->getNewToDate() != null)){
+                $query = $query->where('dateString', '=', $this->getNewToDate());
+            }else if(($this->getNewFromDate() != null) && ($this->getNewToDate() != null)){
+                $query = $query->whereBetween('dateString', array($this->getNewFromDate(), $this->getNewToDate()));
             }
 
-            // Query dates smaller than selected dates
-            if($this->newToDate != null){
-                $query = $query->where('dateString', '<=', $this->newToDate);
-            }
         }
 
 
