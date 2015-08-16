@@ -15,19 +15,6 @@ class TicketsController extends BaseController {
 	|
 	*/
 
-	/*Used in searchReportNullValidation() to store variables here and so search() and report() can access these variables*/
-	private $ticketNumber;
-
-	private $passengerName;
-	private $first;         // first of passgenerName after parsed
-	private $mid;           // mid of passgenerName after parsed
-	private $last;          // last of passgenerName after parsed
-
-	private $rloc;
-	private $newFromDate;
-	private $newToDate;
-	/*******/
-
 	public function getIndex()
 	{	
 		$num =	$this->fileConvertAndUpdate();
@@ -97,14 +84,14 @@ class TicketsController extends BaseController {
      */
 	public function search(){
 		$data = array();
-		$this->processPostData($_POST['ticketNumber'],
-										   $_POST['passengerName'],
-										   $_POST['rloc'],
-										   $_POST['fromDate'],
-										   $_POST['toDate']);
+		$dataProcess = new DataProcess($_POST['ticketNumber'],
+			$_POST['passengerName'],
+			$_POST['rloc'],
+			$_POST['fromDate'],
+			$_POST['toDate']);
 
 		$query = Document::query();
-		$this->getQuery($query);
+		$dataProcess->getQuery($query);
 		$model = $query->get();
 
 		$index = 0;
@@ -114,9 +101,9 @@ class TicketsController extends BaseController {
 		if(sizeof($model) == 1){
 			$systemName = $model[0]->systemName;  //Gets the systemName
 
-			if(($this->newFromDate != null) && ($this->newToDate != null)){
+			if(($dataProcess->getNewFromDate() != null) && ($dataProcess->getNewToDate() != null)){
 				// If
-				$getAllModel = Document::whereBetween('dateString', array($this->newFromDate, $this->newToDate))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+				$getAllModel = Document::whereBetween('dateString', array($dataProcess->getNewFromDate(), $dataProcess->getNewToDate()))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
 			}else{
 				//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
 				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
@@ -128,7 +115,7 @@ class TicketsController extends BaseController {
 			$allIndex = [];
 			if(sizeof($getAllModel) > 0){
 				foreach($getAllModel as $key => $value){
-					if(($value->ticketNumber) == $this->ticketNumber){
+					if(($value->ticketNumber) == $dataProcess->getTicketNumber()){
 						$index = $key;
 					}
 					$allIndex[] = $key;
@@ -268,95 +255,9 @@ class TicketsController extends BaseController {
 		echo json_encode($data);
 	}
 
-	/**
-	 * function searchReportNullValidation()
-	 * Used in search() and report()
-	 * Checks what needs to be done when the variables are null or not
-	 * The variables will then be stored as global variables
-	 * @param $ticketNumber			$_POST['ticketNumber']
-	 * @param $passengerName		$_POST['passengerName']
-	 * @param $rloc					$_POST['rloc']
-	 * @param $fromDate				$_POST['fromDate']
-	 * @param $toDate				$_POST['toDate']
-     */
-	public function processPostData($ticketNumber, $passengerName, $rloc , $fromDate, $toDate){
-		/* Check if ticket number entered is not null and is number */
-		if(($ticketNumber != null) && (is_numeric($ticketNumber))){
-			$this->ticketNumber = trim($ticketNumber);
-		}else{
-			$this->ticketNumber = "";
-		}
 
-		/* Parse the passenger name by space or slash */
-		if (($passengerName != null) || empty(($passengerName))) {
-			$this->passengerName = strtoupper(trim($passengerName));
-			if(strpos($this->passengerName,'/')){
-				$parsePassengerName = explode("/", $this->passengerName);
-			}else{
-				$parsePassengerName = explode(" ", $this->passengerName);
-			}
-			$this->first = (array_key_exists(0, $parsePassengerName) ? $parsePassengerName[0] : "");
-			$this->mid   = (array_key_exists(1, $parsePassengerName) ? $parsePassengerName[1] : "");
-			$this->last   = (array_key_exists(2, $parsePassengerName) ? $parsePassengerName[2] : "");
-		}else{
-			$this->passengerName = null;
-		}
 
-		/* Check if RLOC is entered */
-		if (($rloc != null)) {
-			$this->rloc = strtoupper(trim($rloc));
-		}else{
-			$this->rloc = "";
-		}
 
-		if($fromDate != null){
-			$parseFromDate = explode("/", trim($fromDate));
-			$this->newFromDate = $parseFromDate[2].$parseFromDate[0].$parseFromDate[1];
-		}else{
-			$this->newFromDate = null;
-		}
-
-		if($toDate != null){
-			$parseToDate = explode("/", trim($toDate));
-			$this->newToDate = $parseToDate[2].$parseToDate[0].$parseToDate[1];
-		}else{
-			$this->newToDate = null;  //set as today if input left null
-		}
-	}
-
-	/**
-	 * function searchReportQuery()
-	 * Used in search() and report()
-	 * If the variables aren't null a query condition will be added into the final query when it runs
-	 * @param $query		stores all the conditions
-     */
-	public function getQuery($query){
-		// Query ticketNumber input if not null
-		if($this->ticketNumber != null){
-			$query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
-		}
-		// Query rloc input if not null
-		if($this->rloc != null){
-			$query = $query->where('rloc', 'LIKE', '%'.$this->rloc.'%');
-		}
-		// Query passengerName if not null
-		// Query will depend on how many words are in the input (max 3 which are parsed into $first, $mid, $last)
-		if($this->passengerName != null){
-			$query = $query->where('paxName', 'LIKE', '%'.$this->first.'%')
-				->where('paxName','LIKE','%'.$this->mid.'%')
-				->where('paxName','LIKE','%'.$this->last.'%');
-		}
-
-		// Query dates bigger than selected dates
-		if($this->newFromDate != null){
-			$query = $query->where('dateString', '>=', $this->newFromDate);
-		}
-
-		// Query dates smaller than selected dates
-		if($this->newToDate != null){
-			$query = $query->where('dateString', '<=', $this->newToDate);
-		}
-	}
 
 
 	/**
@@ -366,14 +267,14 @@ class TicketsController extends BaseController {
 	 * @return string		string of the contents
      */
 	public function report(){
-		$this->processPostData(trim($_POST['ticketNumber']),
+		$dataProcess = new DataProcess(trim($_POST['ticketNumber']),
 			trim($_POST['passengerName']),
 			trim($_POST['rloc']),
 			trim($_POST['date-from-field']),
 			trim($_POST['date-to-field']));
 
 		$query = Document::query();
-		$this->getQuery($query);
+		$dataProcess->getQuery($query);
 		$model = $query->get();
 
 		if(sizeof($model) > 0) {
