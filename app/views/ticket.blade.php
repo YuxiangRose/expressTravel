@@ -94,12 +94,32 @@
       /* Enable datepicker widget */
       // Only restriction is cannot pick any date pass today
       $( "#date-from-field" ).datepicker({
-          maxDate: "0"
+          maxDate: "0",
+          onClose: function(e){
+            var currentDate = $(this).datepicker( "getDate" );
+            var currentToDate = $( "#date-to-field" ).datepicker( "getDate" );
+            if(currentToDate == null){
+              $( "#date-to-field" ).datepicker('setDate', currentDate);
+            }
+          }
       });
 
       $( "#date-to-field" ).datepicker({
-          maxDate: "0"
+          maxDate: "0",
+          onClose: function(e){
+            var currentDate = $(this).datepicker( "getDate" );
+            var fromCurrentDate = $( "#date-from-field" ).datepicker( "getDate" );
+            if(fromCurrentDate == null){
+              $( "#date-from-field" ).datepicker('setDate', currentDate);
+            }
+            
+          }
       });
+
+      $( "#date-from-field" ).datepicker('setDate', new Date());
+      $( "#date-to-field" ).datepicker('setDate', new Date());
+    
+
       /* End datepicker widget */
 
     $( "#text-field" ).accordion();
