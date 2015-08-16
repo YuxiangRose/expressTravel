@@ -17,6 +17,7 @@
         private $rloc;
         private $newFromDate;
         private $newToDate;
+        private $systemName;
 
         /**
          * Data constructor.
@@ -28,12 +29,13 @@
          * @param $fromDate
          * @param $toDate
          */
-        public function __construct($ticketNumber, $passengerName, $rloc, $fromDate, $toDate) {
+        public function __construct($ticketNumber, $passengerName, $rloc, $fromDate, $toDate, $systemName) {
             $this->setTicketNumber($ticketNumber);
             $this->setPassengerName($passengerName);
             $this->setRloc($rloc);
             $this->setNewFromDate($fromDate);
             $this->setNewToDate($toDate);
+            $this->setSystemName($systemName);
         }
 
 
@@ -91,6 +93,13 @@
          */
         public function getNewToDate() {
             return $this->newToDate;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getSystemName() {
+            return $this->systemName;
         }
 
         /**
@@ -182,6 +191,13 @@
             }
         }
 
+        /**
+         * @param mixed $systemName
+         */
+        public function setSystemName($systemName) {
+            $this->systemName = $systemName;
+        }
+
 
         /**
          * function getQuery()
@@ -225,6 +241,10 @@
                 $query = $query->where('dateString', '=', $this->getNewToDate());
             }else if(($this->getNewFromDate() != null) && ($this->getNewToDate() != null)){
                 $query = $query->whereBetween('dateString', array($this->getNewFromDate(), $this->getNewToDate()));
+            }
+
+            if(($this->getSystemName() != null) && ($this->getSystemName() != 'ALL')){
+                $query = $query->where('systemName', '=', $this->getSystemName());
             }
 
         }
