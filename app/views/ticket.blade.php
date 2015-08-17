@@ -174,6 +174,12 @@
               $("input[name='ticketNumber']").val('');
               alert("please enter a number");
           }
+          if(rloc || ticketNumber || passengerName || fromDate || toDate){
+            noError = true;
+          }else{
+            noError = false;
+            alert("Please enter at least one search condition.");
+          }
 
           if(noError){
               $("#text-field").empty();
@@ -503,12 +509,16 @@
       /* Button to reset all input fields */
       $('.btn-reset').on('click', function(e){
           e.preventDefault();
-
           $("input[name='ticketNumber']").val('');
           $("input[name='passengerName']").val('');
           $("input[name='rloc']").val('');
           $("input[name='date-from-field']").val('');
           $("input[name='date-to-field']").val('');
+          $("#system-selector").selectmenu( "destroy" );
+          $("#system-selector").val('ALL'),
+          $("#system-selector").selectmenu({
+            width: 145
+          });
       }); // end btn-reset
 
 

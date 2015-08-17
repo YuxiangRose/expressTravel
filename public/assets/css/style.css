@@ -16,7 +16,7 @@ input[type=submit]:hover {cursor: pointer;}
 	.sub-container .date-to-field{width: 200px; float: right;}
 form .input-group{float: left; width: 500px;}
 .form-field{width: 480px; float:left; margin-bottom: 5px;}
-	.button-field{float:left; margin: -5px 0 0 10px; width: 400px; margin: 0px 5px 5px 0;}
+	.button-field{float:left; width: 420px; }
 	.button-field button {margin: 5px 0 0; float:left;margin: 0px 5px 5px 0;}
 	.button-field input {margin: 5px 0 0; float:left; margin: 0px 5px 5px 0;}
 	.button-field #system-selector-button {margin: 0; float:left;height: 36px;}
