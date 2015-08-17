@@ -43,6 +43,7 @@
           <button class="btn-update">Update</button>
           <button class="btn-report" type="submit">Report</button>
           <button class="btn-reset">Reset</button>
+            <div style="clear:both;"></div>
           <button class="btn-prev" name="previous"> << PREV</button>
           <button class="btn-next" name="next">NEXT >> </button>
           <select name="system-selector" id="system-selector">
@@ -51,8 +52,10 @@
               <option value="AMADEUS">AMADEUS</option>
               <option value="GALILEO">GALILEO</option>
           </select>
+            <div style="clear:both;"></div>
           <button class="btn-next-record" name="nextRecord"> << Next Record</button>
           <button class="btn-prev-record" name="prevRecord">Prev Record>></button>
+          <button class="btn-today" name="btn-today">Today</button>
         </div> <!---end button-field -->
       </form>
 
@@ -122,8 +125,14 @@
           }
       });
 
-      $( "#date-from-field" ).datepicker('setDate', new Date());
-      $( "#date-to-field" ).datepicker('setDate', new Date());
+      $('.btn-today').on('click', function(e){
+          e.preventDefault();
+          $( "#date-from-field" ).datepicker('setDate', new Date());
+          $( "#date-to-field" ).datepicker('setDate', new Date());
+      });
+
+//      $( "#date-from-field" ).datepicker('setDate', new Date());
+//      $( "#date-to-field" ).datepicker('setDate', new Date());
     
 
       /* End datepicker widget */
