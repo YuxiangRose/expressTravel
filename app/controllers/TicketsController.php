@@ -93,7 +93,7 @@ class TicketsController extends BaseController {
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
-		$model = $query->get();
+		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->get();
 
 		$index = 0;
 		/* If model only has one record, check if it's the first or last record within the same systemName to determine which prev/next button to enable or disable
@@ -273,11 +273,11 @@ class TicketsController extends BaseController {
 			trim($_POST['rloc']),
 			trim($_POST['date-from-field']),
 			trim($_POST['date-to-field']),
-			trim($_POST['choose-systemName']));
+			trim($_POST['system-selector']));
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
-		$model = $query->get();
+		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->get();
 
 		if(sizeof($model) > 0) {
 			$longString = null;
