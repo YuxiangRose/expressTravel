@@ -275,6 +275,16 @@ class TicketsController extends BaseController {
 			trim($_POST['date-to-field']),
 			trim($_POST['system-selector']));
 
+		$ticketNumber = $dataProcess->getTicketNumber();
+		$passengerName = $dataProcess->getPassengerName();
+		$rloc = $dataProcess->getRloc();
+		$fromDate = $dataProcess->getNewFromDate();
+		$toDate = $dataProcess->getNewToDate();
+
+		if((empty($ticketNumber . $passengerName . $rloc . $fromDate . $toDate))){
+			return View::make('date', array('long' => 'Please enter at least one search condition.', 'back' => true));
+		}
+
 		$query = Document::query();
 		$dataProcess->getQuery($query);
 		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->get();
@@ -290,7 +300,7 @@ class TicketsController extends BaseController {
 			$longString = 'Sorry the document does not exist, or hasn not been update yet, please click update and try again.';
 		}
 
-		return View::make('date', array('long' => $longString));
+		return View::make('date', array('long' => $longString, 'back' => false));
 	}
 
 	public function saveComment(){
