@@ -522,6 +522,10 @@
           });
       }); // end btn-reset
 
+      $("#text-field").on('click','.print-btn',function(e){
+        alert('fdfds');
+      })
+
 
   }); //end document ready
 </script>
