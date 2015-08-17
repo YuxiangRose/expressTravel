@@ -20,7 +20,7 @@ class CreateFilesTable extends Migration {
 			$table->string('fileType',50);
 			$table->string('systemName',20);
 			$table->string('airlineName',255);
-			$table->string('ticketNumber',50);
+			$table->string('ticketNumber',50)->unique();
 			$table->string('dateString',50);
 			$table->string('orderOfDay',50);
 			$table->string('fileContent',65535);

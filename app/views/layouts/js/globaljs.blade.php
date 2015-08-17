@@ -6,4 +6,5 @@
 <![endif]-->
 {{ HTML::script('assets/js/jquery-1.11.3.min.js'); }}
 {{ HTML::script('assets/js/jquery-ui-1.11.4.custom/jquery-ui.min.js'); }}
+{{ HTML::script('assets/js/jquery-ui-1.11.4.custom/jquery-print.min.js'); }}
 <!-- END CORE PLUGINS -->

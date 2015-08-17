@@ -12,7 +12,7 @@
     <h1>E-Ticket Search</h1>
   </div>
   <div class="update-info">
-    <h3>{{$num}} file(s) have been converted and updated.</h3>
+    <h3>{{$num}} file(s) have been converted OR updated.</h3>
   </div>
   <div class="sub-container">
       <form action="/report" method="POST" target="_blank">
@@ -521,6 +521,10 @@
             width: 145
           });
       }); // end btn-reset
+
+      $("#text-field").on('click','.print-btn',function(e){
+        alert('fdfds');
+      })
 
 
   }); //end document ready
