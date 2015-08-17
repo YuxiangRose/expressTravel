@@ -39,7 +39,7 @@ class TicketsController extends BaseController {
 				//var_dump($handler);
 				if($handler->getFileType() != NULL){
 					try {
-			            $document = Document::create(array(
+			            $document = Document::firstOrCreate(array(
 			                'path' 			=> $handler->getPath(),
 			                'fileName'  	=> $handler->getFileName(),
 			                'fileType'  	=> $handler->getFileType(),
