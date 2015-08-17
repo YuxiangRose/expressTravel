@@ -1,0 +1,20 @@
+                                                                        
+ETKT     **AGENT COUPON**    27C8VY    61501234       **ITINERARY**     
+JAPAN AIRLINES INTL          1 OF 1   MX6MX2/1V    JL  17X YVRNRT 09JUL 
+CHAN/DANA MS                                          D1X0O4B5          
+                                         26JUN15     VOID  NRT          
+NONEND NONRRT NONREF/NO RTN 27  TCT2WC2                                 
+AUG-09SEP15/AUTH AMRPOZ-15110                     OCX 595I KIXHKG 17JUL 
+9JUL YVR JL NRT  /-KIX CX HKG  JL X/NRT  JL YVR 3     D1X0O4B5          
+094.89      CAD3094.89 END XT 20.00SQ 10.40OI 37. OJL 736D HKGNRT 30JUL 
+80SW 19.10HK 118.20YQ 7.20YR A/C 157.70               D1X0O4B5          
+                                                  XJL  18X NRTYVR 30JUL 
+                                                      D1X0O4B5          
+CAD 3094.89             EXCH/1318917098011                              
+CAD 25.91CA CAXXXXXXXXXXXX4808 A/C SAME 157.70 99                       
+CAD  1.00XG FCI1                                                        
+CAD212.70XT ORIG ISS/1318917098011YVR14MAY1561501234                    
+CAD 3334.50                                                             
+         131 8917298762 0PRI FVFF/FVVV                                  
+5880/    131 8917298763 1CNJ   COMM/ 0     72                           
+.

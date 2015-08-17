@@ -71,7 +71,8 @@
 @section('js')
 <script>
   $(document).ready(function() {
-    var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
+    //var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
+    var buttonBlock = "<div class='button-block'><button class='comment-btn'>Remarks</button></div>";
 
 /**********************************************************************/
       /* Reference for future use*/
@@ -184,12 +185,12 @@
               alert("please enter a number");
           }
 
-//         if(rloc || ticketNumber || passengerName || fromDate || toDate){
-//           noError = true;
-//         }else{
-//           noError = false;
-//           alert("Please enter at least one search condition.");
-//         }
+        if(rloc || ticketNumber || passengerName || fromDate || toDate){
+          noError = true;
+        }else{
+          noError = false;
+          alert("Please enter at least one search condition.");
+        }
 
           if(noError){
               $("#text-field").empty();
@@ -531,9 +532,9 @@
           });
       }); // end btn-reset
 
-      $("#text-field").on('click','.print-btn',function(e){
+      /*$("#text-field").on('click','.print-btn',function(e){
         alert('fdfds');
-      })
+      })*/
 
 
   }); //end document ready

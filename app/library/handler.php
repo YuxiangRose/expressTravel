@@ -189,7 +189,7 @@
 
             foreach ($fileLines as $key => $line) {
                 $posType = strpos($line, $typeNeedle);
-                $posNumber = stripos($line, "PRI FF") + stripos($line, "FFFF") + stripos($line,"FFVV") ;
+                $posNumber = stripos($line, "PRI FF") + stripos($line, "FFFF") + stripos($line,"FFVV") + stripos($line, "PRI ") ;
 
                 if($posType > 0){
                     $typeLine = explode("  ",trim($line));
@@ -234,7 +234,7 @@
             }
             $this->setAirlineName($typeLine[0]);
             //$parsedLine['airlineName'] = $typeLine[0];
-            
+
             foreach ($numberLine as $key => $value) {
                 if(strlen($value) == 10){
                     //$parsedLine['tickeNumebr'] = $value;
@@ -252,6 +252,7 @@
             $this->setFileContent($fileContent);
            
             $this->setTicketsType("Ticket");
+
         }
 
         public function parseRefunded($path,$fileName,$refundType){
