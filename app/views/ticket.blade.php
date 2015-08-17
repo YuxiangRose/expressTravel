@@ -174,12 +174,13 @@
               $("input[name='ticketNumber']").val('');
               alert("please enter a number");
           }
-          if(rloc || ticketNumber || passengerName || fromDate || toDate){
+          
+          /*if(rloc || ticketNumber || passengerName || fromDate || toDate){
             noError = true;
           }else{
             noError = false;
             alert("Please enter at least one search condition.");
-          }
+          }*/
 
           if(noError){
               $("#text-field").empty();
