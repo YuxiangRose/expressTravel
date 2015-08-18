@@ -36,7 +36,6 @@ class TicketsController extends BaseController {
 		foreach ($documents_group as $key => $value) {
 			if($value != "." && $value != ".."){
 				$handler = new handler($dir,$value);
-				//var_dump($handler);
 				if($handler->getFileType() != NULL){
 					try {
 			            $document = Document::firstOrCreate(array(
@@ -58,9 +57,10 @@ class TicketsController extends BaseController {
 			            $num++;
 			            rename($dir.$value, "../done/".$value);
 			        } catch (Exception $e) {
+			        	rename($dir.$value, "../duplicate/".$value);
 			            $response['info'] = "fail";
 			            $boolean = false;
-			            echo $e;
+			            //echo $e;
 			        }
 		        }				
 			}
@@ -144,9 +144,13 @@ class TicketsController extends BaseController {
 			$comments = array();
 			$notes = Note::where('ticketNumber','=',$model[0]['ticketNumber'])->get();
 			foreach ($notes as $key => $value) {
-				$comments[$key] = $value->note;
+				$comments[$key]['time'] = $value->created_at->toDateTimeString();
+				$comments[$key]['content'] = $value->note;
 			}
 			$data[$index]['comments'] = $comments;
+			if(!$_POST['ticketNumber']){
+				$data[$index]['disable-both'] = 'disable-both';
+			}
 		}else if(sizeof($model)>1){
 
 			foreach ($model as $key => $value) {
@@ -160,7 +164,8 @@ class TicketsController extends BaseController {
 				$comments = array();
 				$notes = Note::where('ticketNumber','=',$value->ticketNumber)->get();
 				foreach ($notes as $key => $value) {
-					$comments[$key] = $value->note;
+					$comments[$key]['time'] = $value->created_at->toDateTimeString();
+					$comments[$key]['content'] = $value->note;
 				}
 				$data[$index]['comments'] = $comments;
 
@@ -249,7 +254,8 @@ class TicketsController extends BaseController {
 		$comments = array();
 		$notes = Note::where('ticketNumber','=',$nextModel->ticketNumber)->get();
 		foreach ($notes as $key => $value) {
-			$comments[$key] = $value->note;
+			$comments[$key]['time'] = $value->created_at->toDateTimeString();
+			$comments[$key]['content'] = $value->note;
 		}
 		$data['comments'] = $comments;
 
@@ -306,13 +312,16 @@ class TicketsController extends BaseController {
 	public function saveComment(){
 		$data = array();
 		if($_POST['comment']){
-			$data['comment'] = $_POST['comment'];
 			try {
 	            $note = Note::create(array(
 	                'ticketNumber'  => $_POST['ticketNumber'],
 	                'note'    => $_POST['comment'],
 	            ));
+	            $time = $note->getAttributes();
 	            $note->save();
+	            $data['time'] = $time["created_at"];
+	            $data['comment'] = $_POST['comment'];
+
 		        } catch (Exception $e) {
 		            $response['info'] = "fail";
 		            $boolean = false;
