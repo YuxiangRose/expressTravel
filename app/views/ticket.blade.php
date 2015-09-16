@@ -339,7 +339,7 @@
       var ticketNumber = Number(globalTicketNumber);
       $.ajax({
         method: "post",
-        url: "/next",
+        url: "../public/next",
         dataType: "json",
         data: {systemName: systemName, ticketNumber: ticketNumber},
         success: function (data) {

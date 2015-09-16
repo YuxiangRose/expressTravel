@@ -20,6 +20,10 @@
         private $paxName;
         private $ticketsType;
 
+        /**
+         * @param $path         //file directory path
+         * @param $fileName     //name of the file
+         */
         public function __construct($path,$fileName){
 
             $this->path     = $path;
@@ -29,108 +33,191 @@
         }
 
         //getters
+        /**
+         * @return mixed
+         */
         public function getPath(){
             return $this->path;
         }
 
+        /**
+         * @return mixed
+         */
         public function getFileName(){
             return $this->fileName;
         }
 
+        /**
+         * @return mixed
+         */
         public function getFileType(){
             return $this->fileType;
         }
 
+        /**
+         * @return mixed
+         */
         public function getSystemName(){
             return $this->systemName;
         }
 
+        /**
+         * @return mixed
+         */
         public function getAirlineName(){
             return $this->airlineName;
         }
 
+        /**
+         * @return mixed
+         */
         public function getTicketNumber(){
             return $this->ticketNumber;
         }
 
+        /**
+         * @return mixed
+         */
         public function getDateString(){
             return $this->dateString;
         }
 
+        /**
+         * @return mixed
+         */
         public function getOrderOfDay(){
             return $this->orderOfDay;
         }
 
+        /**
+         * @return mixed
+         */
         public function getDateOfFile(){
             return $this->dateOfFile;
         }
 
+        /**
+         * @return mixed
+         */
         public function getFileContent(){
             return $this->fileContent;
         }
 
+        /**
+         * @return mixed
+         */
         public function getRloc(){
             return $this->rloc;
         }
 
+        /**
+         * @return mixed
+         */
         public function getPaxName(){
             return $this->paxName;
         }
 
+        /**
+         * @return mixed
+         */
         public function getTicketsType(){
             return $this->ticketsType;
         }
 
         //setters
+        /**
+         * @param $fileName
+         */
         public function setFileName($fileName){
             $this->fileName = $fileName;
         }
 
+        /**
+         * @param $fileType
+         */
         public function setFileType($fileType){
             $this->fileType = $fileType;
         }
 
+        /**
+         * @param $systemName
+         */
         public function setSystemName($systemName){
             $this->systemName = $systemName;
         }
 
+        /**
+         * @param $airlineName
+         */
         public function setAirlineName($airlineName){
             $this->airlineName = $airlineName;
         }
 
+        /**
+         * @param $ticketNumber
+         */
         public function setTicketNumber($ticketNumber){
             $this->ticketNumber = $ticketNumber;
         }
 
+        /**
+         * @param $dateString
+         */
         public function setDateString($dateString){
             $this->dateString = $dateString;
         }
 
+        /**
+         * @param $orderOfDay
+         */
         public function setOrderOfDay($orderOfDay){
             $this->orderOfDay = $orderOfDay;
         }
 
+        /**
+         * @param $dateOfFile
+         */
         public function setDateOfFile($dateOfFile){
             $this->dateOfFile = $dateOfFile;
         }
 
+        /**
+         * @param $fileContent
+         */
         public function setFileContent($fileContent){
             $this->fileContent = $fileContent;
         }
 
+        /**
+         * @param $rloc
+         */
         public function setRloc($rloc){
             $this->rloc = $rloc;
         }
 
+        /**
+         * @param $paxName
+         */
         public function setPaxName($paxName){
             $this->paxName = $paxName;
         }
 
+        /**
+         * @param $ticketsType
+         */
         public function setTicketsType($ticketsType){
             $this->ticketsType = $ticketsType;
         }
 
 
+        /**
+         * 1.  Check if the content of the text file has "**ITINERARY**"
+         * 2.  If yes, parse the ticket using parseTicket()
+         * 3.  If not, check if the content of the text contains one of the system's refund string
+         * 4.  If yes, parse the ticket using parseRefunded()
+         * @param $path         //path of file directory
+         * @param $fileName     //name of the file
+         */
         public function convertFile($path,$fileName){
             //$ticketFileNeedle = "**ITINERARY**";
             //$AMADEUSREFOUND = "*****REFUNDED TICKETS";
@@ -157,6 +244,13 @@
             }
         }
 
+
+        /**
+         * Parse the ticket as a regular ticket
+         * Gets all the info needed from the text file and store them into the handler class variables
+         * @param $path         //path of file directory
+         * @param $fileName     //name of the file
+         */
         public function parseTicket($path, $fileName){
 
             $fileLines = array();
