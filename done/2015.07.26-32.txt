@@ -1,0 +1,20 @@
+                                                                        
+ETKT     **AGENT COUPON**    27C8VY    61501232       **ITINERARY**     
+INTERNATIONAL AIRLINES          1 OF 1   MX6MX2/1V    JL  17X YVRNRT 09JUL 
+FUNG/RICHARD MR                                        D1X5O4B5          
+                                         26JUN15     VOID  NRT          
+NONEND NONRRT NONREF/NO RTN 27  TCT2QC2                                 
+AUG-09SEP15/AUTH ADRBOZ-15320                     OCX 535I EIDALE 17JUL 
+9JUL YVR JL NRT  /-KIX CX HKG  JL X/NRT  JL YVR 3     PD1DIAS9          
+094.89      CAD3094.89 END XT 20.00SQ 10.40OI 37. OJL 766D EALDIE 30JUL 
+80SW 19.10HK 118.20YQ 7.20YR A/C 157.70               PD1DIAS9          
+                                                  XJL  108X BKEALD 30JUL 
+                                                      PD1DIAS9          
+CAD 3094.89             EXCH/1318917098012                              
+CAD 25.91CA CAXXXXXXXXXXXX4808 A/C SAME 157.70 99                       
+CAD  1.00XG FCI1                                                        
+CAD212.70XT ORIG ISS/1318917098012YVR14MAY1561501234                    
+CAD 3334.50                                                             
+         131 4839281498 2PRI FVFF/FVVV                                  
+5880/    131 4839281498 3CNJ   COMM/ 0     72                           
+.
