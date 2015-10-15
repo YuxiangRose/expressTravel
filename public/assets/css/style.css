@@ -39,3 +39,10 @@ form .input-group{float: left; width: 500px;}
 .ticket-highlight{background-color: yellow;}
 .single-comment .timestamp{color: #3399FF; font-size: 10px;}
 .single-comment p{font-size: 15px; margin: 5px 0 0;}
+#pager-container{float: left;
+    margin: 0 0 0 420px;
+    width: 50%;}
+.has-comment{
+	color:red;
+	font-size: 14px;
+}

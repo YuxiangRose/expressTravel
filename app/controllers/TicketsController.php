@@ -14,6 +14,7 @@ class TicketsController extends BaseController {
 	|	Route::get('/', 'HomeController@showWelcome');
 	|
 	*/
+	private $recordPerPage = 40;
 
 	public function getIndex()
 	{	
@@ -84,6 +85,8 @@ class TicketsController extends BaseController {
      */
 	public function search(){
 		$data = array();
+		$pageIndex = $_POST['pageIndex'];
+
 		$dataProcess = new DataProcess($_POST['ticketNumber'],
 			$_POST['passengerName'],
 			$_POST['rloc'],
@@ -93,7 +96,11 @@ class TicketsController extends BaseController {
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
-		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->get();
+		$totalRecord = $query->count();
+		$totalPage = ceil($totalRecord/$this->recordPerPage);
+		$pageIndex =  $pageIndex - 1; 
+		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->skip($pageIndex * $this->recordPerPage)->take($this->recordPerPage)->get();
+		//$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->skip(1)->take(2)->get();
 
 		$index = 0;
 		/* If model only has one record, check if it's the first or last record within the same systemName to determine which prev/next button to enable or disable
@@ -148,19 +155,22 @@ class TicketsController extends BaseController {
 				$comments[$key]['content'] = $value->note;
 			}
 			$data[$index]['comments'] = $comments;
+			if( sizeof($comments) > 0){
+				$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+			}else{
+				$data[$index]['hasComment'] = "";
+			}
 			if(!$_POST['ticketNumber']){
 				$data[$index]['disable-both'] = 'disable-both';
 			}
 		}else if(sizeof($model)>1){
-
 			foreach ($model as $key => $value) {
 				$data[$index]['content'] = $value->fileContent;
 				$data[$index]['dateOfFile'] = $value->dateOfFile;
 				$data[$index]['paxName'] = $value->paxName;
 				$data[$index]['airlineName'] = $value->airlineName;
 				$data[$index]['systemName'] = $value->systemName;
-				$data[$index]['ticketNumber'] =$value->ticketNumber;
-
+				
 				$comments = array();
 				$notes = Note::where('ticketNumber','=',$value->ticketNumber)->get();
 				foreach ($notes as $key => $value) {
@@ -168,12 +178,17 @@ class TicketsController extends BaseController {
 					$comments[$key]['content'] = $value->note;
 				}
 				$data[$index]['comments'] = $comments;
-
-				//}else{
-					//$data['content'][]="Sorry the document does not exist, or hasn't been update yet, please click update and try again.";					
-				//}
+				if( sizeof($comments) > 0){
+					$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+				}else{
+					$data[$index]['hasComment'] = "";
+				}
 				$index++;
 			}
+			
+			$data[0]['totalPage'] = $totalPage;
+			$data[0]['totalRecord'] = $totalRecord;
+			
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
@@ -258,7 +273,11 @@ class TicketsController extends BaseController {
 			$comments[$key]['content'] = $value->note;
 		}
 		$data['comments'] = $comments;
-
+		if( sizeof($comments) > 0){
+			$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+		}else{
+			$data[$index]['hasComment'] = "";
+		}
 		echo json_encode($data);
 	}
 

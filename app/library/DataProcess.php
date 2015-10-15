@@ -203,12 +203,12 @@
          * function getQuery()
          * Used in search() and report()
          * If the variables aren't null a query condition will be added into the final query when it runs
-         * @param $query		stores all the conditions
+         * @param $query stores all the conditions
          */
         public function getQuery($query){
             // Query ticketNumber input if not null
             if($this->ticketNumber != null){
-                $query = $query->where('ticketNumber', 'LIKE', '%'.$this->ticketNumber.'%');
+                $query = $query->where('ticketNumber', '=', $this->ticketNumber);
             }
             // Query rloc input if not null
             if($this->rloc != null){
@@ -246,7 +246,6 @@
             if(($this->getSystemName() != null) && ($this->getSystemName() != 'ALL')){
                 $query = $query->where('systemName', '=', $this->getSystemName());
             }
-
         }
 
 

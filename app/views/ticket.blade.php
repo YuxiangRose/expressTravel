@@ -53,15 +53,20 @@
               <option value="GALILEO">GALILEO</option>
           </select>
             <div style="clear:both;"></div>
-          <button class="btn-next-record" name="nextRecord"> << Next Record</button>
-          <button class="btn-prev-record" name="prevRecord">Prev Record>></button>
+          <button class="btn-prev-record" name="nextRecord"> << Prev Record</button>
+          <button class="btn-next-record" name="prevRecord">Next Record>></button>
           <button class="btn-today" name="btn-today">Today</button>
         </div> <!---end button-field -->
       </form>
 
     <input type="hidden" name="ticketHolder" value="">
   </div><!--end sub-container -->
-
+  <div id="pager-container">
+    <button class="prev-page">Prev Page</button>
+    <label class="minPage" > 1 </label> OF
+    <label class="maxPage"></label>
+    <button class="next-page">Next Page</button>
+  </div>
   <div id="text-field">
   </div>
 
@@ -71,6 +76,17 @@
 @section('js')
 <script>
   $(document).ready(function() {
+    $("#pager-container").hide();
+    var minPage = 1;
+    var maxPage = 0;
+    var pageIndex = 1;
+
+    var ticketNumber  = "";
+    var passengerName = "";
+    var rloc          = "";
+    var fromDate      = "";
+    var toDate        = "";
+    var systemName    = "";
     //var buttonBlock = "<div class='button-block'><button class='print-btn'>Print</button><button class='comment-btn'>Remarks</button></div>";
     var buttonBlock = "<div class='button-block'><button class='comment-btn'>Remarks</button></div>";
 
@@ -128,6 +144,18 @@
 
       $('.btn-today').on('click', function(e){
           e.preventDefault();
+          $.ajax({
+            method: "get",
+            url: "/update",
+            dataType: "json",
+            success: function(data){
+              $(".update-info h3").text(data['num']+' files have been convert and updated.')
+              $(".update-info").show();
+              setTimeout(function() {
+                  $('.update-info').slideUp('slow');
+              }, 1000);
+            }
+          });
           $( "#date-from-field" ).datepicker('setDate', new Date());
           $( "#date-to-field" ).datepicker('setDate', new Date());
       });
@@ -157,6 +185,113 @@
     var globalTicketNumber;
     var globalSystemName;
 
+    if(pageIndex == 1){
+      $('.prev-page').button( "disable" );
+    }
+
+    $(".prev-page").click(function(event) {
+      event.preventDefault();
+      pageIndex--;
+      $('.minPage').text(pageIndex);
+      if(pageIndex == minPage){
+        $('.next-page').button( "enable" );
+        $('.prev-page').button( "disable" );        
+      }else{
+        $('.next-page').button( "enable" );
+        $('.prev-page').button( "enable" );        
+      }
+      $("#text-field").empty();
+        $.ajax({
+            method: "post",
+            url: "/search",
+            dataType: "json",
+            data: {ticketNumber:ticketNumber,
+                passengerName:passengerName,
+                rloc:rloc,
+                fromDate:fromDate,
+                toDate:toDate,
+                systemName:systemName,
+                minPage:minPage,
+                maxPage:maxPage,
+                pageIndex:pageIndex
+                },
+            success: function(data){
+                $("#pager-container").show();
+                $(".maxPage").text(data[0]['totalPage']);
+                maxPage = data[0]['totalPage'];
+                maxIndexForDoc = data.length -1;
+                $.each(data,function(index,item){
+                  var comment = '';
+                  $.each(item['comments'],function(index,note){
+                    comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
+                  });
+                  $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                  });
+                  $(".print-btn").button();
+                  $('.comment-btn').button();
+                  $( "#text-field" ).accordion( "destroy" );
+                  $( "#text-field" ).accordion({
+                      collapsible: true,
+                      header: "> div > h3",
+                      animate: 0,
+                  });
+                  $('.btn-prev-record').button( "enable" );
+                  $('.btn-next-record').button( "enable" );
+            }
+        })
+    });
+
+    $(".next-page").click(function(event) {
+      event.preventDefault();
+      pageIndex++;
+      $('.minPage').text(pageIndex);
+      if(pageIndex == maxPage){
+        $('.next-page').button( "disable" );
+        $('.prev-page').button( "enable" );        
+      }else{
+        $('.next-page').button( "enable" );
+        $('.prev-page').button( "enable" );
+      }
+      $("#text-field").empty();
+        $.ajax({
+            method: "post",
+            url: "/search",
+            dataType: "json",
+            data: {ticketNumber:ticketNumber,
+                passengerName:passengerName,
+                rloc:rloc,
+                fromDate:fromDate,
+                toDate:toDate,
+                systemName:systemName,
+                minPage:minPage,
+                maxPage:maxPage,
+                pageIndex:pageIndex
+                },
+            success: function(data){
+                $("#pager-container").show();
+                $(".maxPage").text(data[0]['totalPage']);
+                maxPage = data[0]['totalPage'];
+                maxIndexForDoc = data.length -1;
+                $.each(data,function(index,item){
+                  var comment = '';
+                  $.each(item['comments'],function(index,note){
+                    comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
+                  });
+                  $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                  });
+                  $(".print-btn").button();
+                  $('.comment-btn').button();
+                  $( "#text-field" ).accordion( "destroy" );
+                  $( "#text-field" ).accordion({
+                      collapsible: true,
+                      header: "> div > h3",
+                      animate: 0,
+                  });
+                  $('.btn-prev-record').button( "enable" );
+                  $('.btn-next-record').button( "enable" );
+            }
+        })
+    });
 
       /*****************/
       /* Search Record */
@@ -170,12 +305,12 @@
 
 
           var noError = true;
-          var ticketNumber  = $.trim($("input[name='ticketNumber']").val());
-          var passengerName = $.trim($("input[name='passengerName']").val());
-          var rloc          = $.trim($("input[name='rloc']").val());
-          var fromDate      = $.trim($("input[name='date-from-field']").val());
-          var toDate        = $.trim($("input[name='date-to-field']").val());
-          var systemName    = $("#system-selector").val();
+          ticketNumber  = $.trim($("input[name='ticketNumber']").val());
+          passengerName = $.trim($("input[name='passengerName']").val());
+          rloc          = $.trim($("input[name='rloc']").val());
+          fromDate      = $.trim($("input[name='date-from-field']").val());
+          toDate        = $.trim($("input[name='date-to-field']").val());
+          systemName    = $("#system-selector").val();
 
           if ($.isNumeric(ticketNumber) || ticketNumber == "") {
               noError = true;
@@ -203,16 +338,23 @@
                       rloc:rloc,
                       fromDate:fromDate,
                       toDate:toDate,
-                      systemName:systemName},
+                      systemName:systemName,
+                      minPage:minPage,
+                      maxPage:maxPage,
+                      pageIndex:pageIndex
+                      },
                   success: function(data){
                       if(data.length>1){
+                          $("#pager-container").show();
+                          $(".maxPage").text(data[0]['totalPage']);
+                          maxPage = data[0]['totalPage'];
                           maxIndexForDoc = data.length -1;
                           $.each(data,function(index,item){
                             var comment = '';
                             $.each(item['comments'],function(index,note){
                               comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
                             });
-                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
                             });
                             $(".print-btn").button();
                             $('.comment-btn').button();
@@ -225,6 +367,7 @@
                             $('.btn-prev-record').button( "enable" );
                             $('.btn-next-record').button( "enable" );
                       }else{
+                        $("#pager-container").hide();
                         if(data['error'] != null){
                           $("#text-field").append("<div class='group'>"+data['error']+"</div>");
                         }else{
@@ -233,7 +376,7 @@
                             $.each(item['comments'],function(index,note){
                               comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
                             });
-                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
                             $(".print-btn").button();
                             $(".comment-btn").button();
                             $( "#text-field" ).accordion( "destroy" );
@@ -275,7 +418,7 @@
       /* Only used inside search where only one record is found */
       function displaySingleDataFromSearch(data){
           $.each(data,function(index,item) {
-              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span></h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                   collapsible: true,
@@ -381,7 +524,7 @@
       $.each(data['comments'],function(index,note){
           comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
       });
-      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+data['dateOfFile']+"</span><span class='header-name'>"+data['paxName']+"</span><span class='header-airline'>"+data['airlineName']+"</span></h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+data['dateOfFile']+"</span><span class='header-name'>"+data['paxName']+"</span><span class='header-airline'>"+data['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
       $(".print-btn").button();
       $('.comment-btn').button();
       $("#text-field").accordion("destroy");
@@ -411,6 +554,7 @@
     $(".btn-next-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
+      $("#text-field").accordion( "option", "active", 0);
       $('.comment-btn').button('destroy');
       $('.print-btn').button('destroy');
       $(".group:first").find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
@@ -423,6 +567,7 @@
     $(".btn-prev-record").click(function(event) {
       /* Act on the event */
       event.preventDefault();
+      $("#text-field").accordion( "option", "active", 0);
       $('.comment-btn').button('destroy');
       $('.print-btn').button('destroy');
       $('.group:first').find('h3').removeClass( "ui-accordion-header-active ui-state-active ui-corner-top" );
