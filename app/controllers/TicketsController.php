@@ -14,7 +14,7 @@ class TicketsController extends BaseController {
 	|	Route::get('/', 'HomeController@showWelcome');
 	|
 	*/
-	private $recordPerPage = 40;
+	private $recordPerPage = 50;
 
 	public function getIndex()
 	{	
@@ -156,7 +156,7 @@ class TicketsController extends BaseController {
 			}
 			$data[$index]['comments'] = $comments;
 			if( sizeof($comments) > 0){
-				$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+				$data[$index]['hasComment'] = "<span class='has-comment'>*R*</span>";
 			}else{
 				$data[$index]['hasComment'] = "";
 			}
@@ -179,7 +179,7 @@ class TicketsController extends BaseController {
 				}
 				$data[$index]['comments'] = $comments;
 				if( sizeof($comments) > 0){
-					$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+					$data[$index]['hasComment'] = "<span class='has-comment'>*R*</span>";
 				}else{
 					$data[$index]['hasComment'] = "";
 				}
@@ -192,7 +192,7 @@ class TicketsController extends BaseController {
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data['error'] = "Sorry the document does not exist, or hasn't been update yet, please click update and try again.";
+			$data['error'] = "Sorry the document doesn't exist, or hasn't been updated, please click the 'Update' Button and try again.";
 		}
 
 		echo json_encode($data);
@@ -274,7 +274,7 @@ class TicketsController extends BaseController {
 		}
 		$data['comments'] = $comments;
 		if( sizeof($comments) > 0){
-			$data[$index]['hasComment'] = "<span class='has-comment'>*</span>";
+			$data[$index]['hasComment'] = "<span class='has-comment'>*R*</span>";
 		}else{
 			$data[$index]['hasComment'] = "";
 		}

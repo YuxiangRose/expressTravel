@@ -28,7 +28,7 @@ form .input-group{float: left; width: 500px;}
 		#text-field .block-hearder .ui-accordion-header-icon{margin: -8px 0 0; float: left;}
 		#text-field .block-hearder .header-date{float: left; height: 20px; width: 100px; color:#AF1F18;}
 		#text-field .block-hearder .header-name{float: left; height: 20px; width: 300px; color:#0969AF;}
-		#text-field .block-hearder .header-airline{float: left; height: 20px; width: 290px;color: #FAA523;}
+		#text-field .block-hearder .header-airline{float: left; height: 20px; width: 250px;color: #FAA523;}
 	#text-field .print-btn{float: right;}
 	#text-field pre{float: left; width: 620px;}
 	#text-field .comment-area{overflow-x: hidden; overflow-y: auto;float: left;width: 210px;margin: 10px 0 0;border-radius: 5px;height: 390px;background: none repeat scroll 0 0 #e3e3e3;}
@@ -40,9 +40,19 @@ form .input-group{float: left; width: 500px;}
 .single-comment .timestamp{color: #3399FF; font-size: 10px;}
 .single-comment p{font-size: 15px; margin: 5px 0 0;}
 #pager-container{float: left;
-    margin: 0 0 0 420px;
-    width: 50%;}
+    text-align: center;
+    width: 100%;}
+#pager-container button{
+	font-size: 12px;
+    font-weight: bolder;
+    height: 30px;
+    width: 50px;
+}
 .has-comment{
 	color:red;
 	font-size: 14px;
+}
+#text-field .block-hearder .indexRecord{
+	float: left;
+    margin: 0;
 }
