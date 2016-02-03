@@ -9,7 +9,7 @@
 @section('contents')
 <div class="container">
   <div class="title">
-    <h1>E-Ticket $earch</h1>
+    <h1>CAVA TRAVEL E-Ticket $earch</h1>
   </div>
   <div class="update-info">
     <h3>{{$num}} file(s) have been converted OR updated.</h3>
@@ -19,43 +19,43 @@
         <div class="input-group">
           <div class="form-field">
             <label>Ticket Number without Airline Code :</label>
-            <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="The 10 Digitals Tkt number ">
+            <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Enter the 10-Digit Tkt Number ">
           </div>
           <div class="form-field">
             <label>Passenger Name : </label>
-            <input class="name-field" type = "text" name="passengerName" value="" placeholder="Please enter Pax name">
+            <input class="name-field" type = "text" name="passengerName" value="" placeholder="Enter the Pax Name">
           </div>
           <div class="form-field">
             <label>Record Locator : </label>
-            <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Please enter RLOC">
+            <input class="rloc-field" type = "text" name="rloc" value="" placeholder="Enter the RLOC">
           </div>
           <div class="form-field">
-            <label for="from">Date of Issue From</label>
-            <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a from Date">
+            <label for="from">Date of Issue : From</label>
+            <input class="date-from-field" type="text" id="date-from-field" name="date-from-field" placeholder="Pick a Date">
           </div>
           <div class="form-field">
-            <label for="to">Date of Issue To</label>
-            <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a to Date">
+            <label for="to">Date of Issue : To</label>
+            <input class="date-to-field" type="text" id="date-to-field" name="date-to-field" placeholder="Pick a Date">
           </div>
         </div>
         <div class="button-field">
-          <input type="submit" class="btn-search"value="Search">
+          <input type="submit" class="btn-search"value="$earch">
           <button class="btn-update">Update</button>
           <button class="btn-report" type="submit">Report</button>
           <button class="btn-reset">Reset</button>
           <div style="clear:both;"></div>
-          <button class="btn-prev" name="previous"> << PREV</button>
-          <button class="btn-next" name="next">NEXT >> </button>
-          <select name="system-selector" id="system-selector">
-              <option value="ALL">ALL</option>
-              <option value="SABRE">SABRE</option>
-              <option value="AMADEUS">AMADEUS</option>
-              <option value="GALILEO">GALILEO</option>
-          </select>
-          <div style="clear:both;"></div>
           <button class="btn-today" name="btn-today">Today</button>
-          <button class="btn-prev-record" name="nextRecord"> << Prev Record</button>
-          <button class="btn-next-record" name="prevRecord">Next Record>></button>
+          <button class="btn-prev-record" name="nextRecord"> <- Prev Record</button>
+          <button class="btn-next-record" name="prevRecord">Next Record -></button>
+          <div style="clear:both;"></div>
+	  <button class="btn-prev" name="previous"><- TKT</button>
+          <button class="btn-next" name="next">TKT -></button>
+          <select name="system-selector" id="system-selector">
+              <option value="ALL">GDS : All</option>
+              <option value="AMADEUS">Amadeus</option>
+              <option value="GALILEO">Galileo</option>
+	      <option value="SABRE">Sabre</option>
+          </select>
         </div> <!---end button-field -->
       </form>
 
@@ -63,10 +63,10 @@
   </div><!--end sub-container -->
   <div id="pager-container">
     <button class="first-page"> << </button>
-    <button class="prev-page"> < </button>
+    <button class="prev-page"> <- </button>
     <label class="minPage" > 1 </label> OF
     <label class="maxPage"></label>
-    <button class="next-page"> > </button>
+    <button class="next-page"> -> </button>
     <button class="last-page"> >> </button>
   </div>
   <div id="text-field">
@@ -410,6 +410,9 @@
           $('.btn-next').button( "disable" );
           $('.btn-prev-record').button( "disable" );
           $('.btn-next-record').button( "disable" );
+          minPage=1;
+          maxPage=0;
+          pageIndex=1;
           event.preventDefault();
 
 
@@ -433,10 +436,11 @@
           noError = true;
         }else{
           noError = false;
-          alert("Please enter at least one search condition.");
+          alert("Please Enter Search Parameter(s).");
         }
 
           if(noError){
+            console.log(pageIndex);
               $("#text-field").empty();
               $.ajax({
                   method: "post",
@@ -456,7 +460,18 @@
                       if(data.length>1){
                           $("#pager-container").show();
                           $(".maxPage").text(data[0]['totalPage']);
+                          $(".minPage").text(minPage);
                           maxPage = data[0]['totalPage'];
+                          pageIndex = 1;
+                          if(maxPage == 1){
+                            $('.next-page').button( "disable" );
+                            $('.last-page').button( "disable" );
+                          }else{
+                            $('.prev-page').button( "disable" );
+                            $('.first-page').button( "disable" );
+                            $('.next-page').button( "enable" );
+                            $('.last-page').button( "enable" );
+                          }
                           maxIndexForDoc = data.length -1;
                           $.each(data,function(index,item){
                             var comment = '';
@@ -485,7 +500,7 @@
                             $.each(item['comments'],function(index,note){
                               comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
                             });
-                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='indexRecord'>"+(index+1)+"</span><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+                            $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span class='header-name'>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
                             $(".print-btn").button();
                             $(".comment-btn").button();
                             $( "#text-field" ).accordion( "destroy" );
@@ -527,7 +542,7 @@
       /* Only used inside search where only one record is found */
       function displaySingleDataFromSearch(data){
           $.each(data,function(index,item) {
-              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='indexRecord'>"+(index+1)+"</span><span class='header-date'>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
+              $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+item['dateOfFile']+"</span><span>"+item['paxName']+"</span><span class='header-airline'>"+item['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+item['content']+"<button class='print-btn'>Print</button></div></div>");
               $( "#text-field" ).accordion( "destroy" );
               $( "#text-field" ).accordion({
                   collapsible: true,
@@ -633,7 +648,7 @@
       $.each(data['comments'],function(index,note){
           comment += "<div class='single-comment'><span class='timestamp'>"+note['time']+"</span><p>"+note['content']+"</p></div>"
       });
-      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='indexRecord'>"+(index+1)+"</span><span class='header-date'>"+data['dateOfFile']+"</span><span class='header-name'>"+data['paxName']+"</span><span class='header-airline'>"+data['airlineName']+"</span>"+item['hasComment']+"</h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
+      $("#text-field").append("<div class='group'><h3 class='block-hearder'><span class='header-date'>"+data['dateOfFile']+"</span><span class='header-name'>"+data['paxName']+"</span><span class='header-airline'>"+data['airlineName']+"</span>"+data['hasComment']+"</h3><div class='text-block'>"+data['content']+"<div class='comment-area'>"+comment+"</div>"+buttonBlock+"</div></div>");
       $(".print-btn").button();
       $('.comment-btn').button();
       $("#text-field").accordion("destroy");
@@ -689,7 +704,7 @@
       $("#text-field").accordion("refresh");
     });
 
-    var inputField = "<div class='inputField'><input class='comment-input' placeholder='Please enter your comment.' name='comment-input' /><button class='comment-save'>SAVE</button><button class='comment-cancel'>CANCEL</button></div>";
+    var inputField = "<div class='inputField'><input class='comment-input' placeholder='Enter the remarks' name='comment-input' /><button class='comment-save'>Save</button><button class='comment-cancel'>Cancel</button></div>";
     $("#text-field").on('click','.comment-btn',function(e){
       $(this).parents('.text-block').append(inputField);
       $('.comment-btn').button( "disable" );

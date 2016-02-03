@@ -99,7 +99,7 @@ class TicketsController extends BaseController {
 		$totalRecord = $query->count();
 		$totalPage = ceil($totalRecord/$this->recordPerPage);
 		$pageIndex =  $pageIndex - 1; 
-		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->skip($pageIndex * $this->recordPerPage)->take($this->recordPerPage)->get();
+		$model = $query->orderBy('dateString', 'asc')->orderBy('documents_id', 'asc')->skip($pageIndex * $this->recordPerPage)->take($this->recordPerPage)->get();
 		//$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->skip(1)->take(2)->get();
 
 		$index = 0;
@@ -111,10 +111,10 @@ class TicketsController extends BaseController {
 
 			if(($dataProcess->getNewFromDate() != null) && ($dataProcess->getNewToDate() != null)){
 				// If
-				$getAllModel = Document::whereBetween('dateString', array($dataProcess->getNewFromDate(), $dataProcess->getNewToDate()))->where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+				$getAllModel = Document::whereBetween('dateString', array($dataProcess->getNewFromDate(), $dataProcess->getNewToDate()))->where('systemName', '=', $systemName)->orderBy('documents_id', 'asc')->get();
 			}else{
 				//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
-				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+				$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('documents_id', 'asc')->get();
 			}
 
 			// $index variable to store the location of the current ticketNumber
@@ -192,7 +192,7 @@ class TicketsController extends BaseController {
 			//$document = $model[0]->getAttributes();
 			//$data['content'] = $document['fileContent']; 	
 		}else{
-			$data['error'] = "Sorry the document doesn't exist, or hasn't been updated, please click the 'Update' Button and try again.";
+			$data['error'] = "Sorry, the document doesn't exist or hasn't been updated. Please click the 'Update' Button and try again.";
 		}
 
 		echo json_encode($data);
@@ -233,7 +233,7 @@ class TicketsController extends BaseController {
 		$ticketNumber = $_POST['ticketNumber'];
 
 		//Getting all the same system number and stores the tickets in an array to find the max ticketNumber
-		$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('ticketNumber', 'asc')->get();
+		$getAllModel = Document::where('systemName', '=', $systemName)->orderBy('documents_id', 'asc')->get();
 
 		// $index variable to store the location of the current ticketNumber
 		// Using this variable to locate the next ticketNumber in row
@@ -274,9 +274,9 @@ class TicketsController extends BaseController {
 		}
 		$data['comments'] = $comments;
 		if( sizeof($comments) > 0){
-			$data[$index]['hasComment'] = "<span class='has-comment'>*R*</span>";
+			$data['hasComment'] = "<span class='has-comment'>*R*</span>";
 		}else{
-			$data[$index]['hasComment'] = "";
+			$data['hasComment'] = "";
 		}
 		echo json_encode($data);
 	}
@@ -312,7 +312,7 @@ class TicketsController extends BaseController {
 
 		$query = Document::query();
 		$dataProcess->getQuery($query);
-		$model = $query->orderBy('dateString', 'asc')->orderBy('paxName', 'asc')->get();
+		$model = $query->orderBy('dateString', 'asc')->orderBy('documents_id', 'asc')->get();
 
 		if(sizeof($model) > 0) {
 			$longString = null;
