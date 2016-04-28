@@ -15,12 +15,13 @@ input[type=submit]:hover {cursor: pointer;}
 	.sub-container .date-from-field{width: 200px; float: right;}
 	.sub-container .date-to-field{width: 200px; float: right;}
 form .input-group{float: left; width: 500px;}
-.form-field{width: 480px; float:left; margin-bottom: 5px;}
-	.button-field{float:left; width: 420px; }
-	.button-field button {margin: 5px 0 0; float:left;margin: 0px 5px 5px 0;}
-	.button-field input {margin: 5px 0 0; float:left; margin: 0px 5px 5px 0;}
+.form-field{width: 500px; float:left; margin-bottom: 5px;}
+	.button-field{float:left; width: 420px; margin-left: 10px;}
+	.button-field button {margin: 5px 0 0; float:left;margin: 0px 5px 5px 0; font-size: 16px;}
+	.button-field input {margin: 5px 0 0; float:left; margin: 0px 5px 5px 0; color:rgb(59,120,231);}
 	.button-field #system-selector-button {margin: 0; float:left;height: 36px;}
-	.button-field .btn-next-record, .btn-prev-record, .btn-today{font-size: .9em !important;}
+	.button-field .btn-next-record, .btn-prev-record, .btn-today{font-size: 16px !important;}
+	.button-field .ui-selectmenu-text {font-size: 16px;}
 #text-field{width: 870px; min-height: 700px; margin-top: 15px; padding: 10px 30px;background-color: #e3e3e3;box-shadow: 2px 2px 2px #c1c1c1; border-radius: 7px;float: left;}
 	#text-field .block-hearder{margin: 0; float: left;width: 840px; padding: 5px 0 5px 30px;}
 	#text-field .text-block{background: none repeat scroll 0 0 white; padding: 5px 0 5px 30px; min-height: 440px; height: auto;float: left;width: 840px; overflow-x: hidden;}

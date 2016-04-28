@@ -38,31 +38,35 @@ class TicketsController extends BaseController {
 			if($value != "." && $value != ".."){
 				$handler = new handler($dir,$value);
 				if($handler->getFileType() != NULL){
-					try {
-			            $document = Document::firstOrCreate(array(
-			                'path' 			=> $handler->getPath(),
-			                'fileName'  	=> $handler->getFileName(),
-			                'fileType'  	=> $handler->getFileType(),
-			                'systemName'    => $handler->getSystemName(),
-			                'airlineName'   => $handler->getAirlineName(),
-			                'ticketNumber'  => $handler->getTicketNumber(),
-			                'dateString'    => $handler->getDateString(),
-			                'orderOfDay'    => $handler->getOrderOfDay(),
-			                'fileContent'   => $handler->getFileContent(),
-			                'dateOfFile'    => $handler->getDateOfFile(),
-			                'paxName'		=> $handler->getPaxName(),
-			                'rloc'			=> $handler->getRloc(),
-			                'ticketsType'	=> $handler->getTicketsType(),
-			            ));
-			            $document->save();
-			            $num++;
-			            rename($dir.$value, "../done/".$value);
-			        } catch (Exception $e) {
-			        	rename($dir.$value, "../duplicate/".$value);
-			            $response['info'] = "fail";
-			            $boolean = false;
-			            //echo $e;
-			        }
+					if ($handler->getTicketsType() == "Refund"){
+						rename($dir.$value, "../refund/".$value);
+					}else{
+						try {
+							$document = Document::firstOrCreate(array(
+								'path' 			=> $handler->getPath(),
+								'fileName'  	=> $handler->getFileName(),
+								'fileType'  	=> $handler->getFileType(),
+								'systemName'    => $handler->getSystemName(),
+								'airlineName'   => $handler->getAirlineName(),
+								'ticketNumber'  => $handler->getTicketNumber(),
+								'dateString'    => $handler->getDateString(),
+								'orderOfDay'    => $handler->getOrderOfDay(),
+								'fileContent'   => $handler->getFileContent(),
+								'dateOfFile'    => $handler->getDateOfFile(),
+								'paxName'		=> $handler->getPaxName(),
+								'rloc'			=> $handler->getRloc(),
+								'ticketsType'	=> $handler->getTicketsType(),
+							));
+							$document->save();
+							$num++;
+							rename($dir.$value, "../done/".$value);
+						} catch (Exception $e) {
+							rename($dir.$value, "../duplicate/".$value);
+							$response['info'] = "fail";
+							$boolean = false;
+						}
+					}
+
 		        }				
 			}
 		}

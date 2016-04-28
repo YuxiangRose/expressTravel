@@ -136,7 +136,7 @@
             //$AMADEUSREFOUND = "*****REFUNDED TICKETS";
             //$GALILEOREFOUND = "***REFUNDED TICKETS";
             //$SABREREFOUND = "REFUND NOTICE";
-            //
+
             $refundType = array();
             $myfile = fopen($path.$fileName, "r") or die("Unable to open file!");
             
@@ -154,6 +154,8 @@
             $isRefund = strpos($fileString, Handler::AMADEUSREFOUND) + strpos($fileString,Handler::GALILEOREFOUND)+ strpos($fileString, Handler::SABREREFOUND);
             if($isRefund > 0){
                 $this->parseRefunded($path,$fileName,$refundType);
+//                rename($path.$fileName, $path."3434343.txt");die;
+//                rename($fileName, '1234.txt');
             }
         }
 
@@ -256,7 +258,8 @@
         }
 
         public function parseRefunded($path,$fileName,$refundType){
-
+            
+            
             $fileLines = array();
             $numberLine = array();
             $airLineArray = array();
@@ -316,13 +319,9 @@
                             $numberLineArray = explode(" ",$numberLine);
                         
                             foreach ($numberLineArray as $key => $value) {
-                                echo $value;
-                                echo "<br>";
                                 if(strlen($value) == 10){
                                     //$parsedLine['tickeNumebr'] = $value;
                                     $this->setTicketNumber($value);
-                                    echo $value;
-                                    echo $this->ticketNumber; die;
                                 }
                             }
 
@@ -335,7 +334,7 @@
                     }
                 }
             }
-            die;
+            
             foreach ($fileLines as $key => $line) {    
             }
 

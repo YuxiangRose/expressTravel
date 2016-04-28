@@ -9,7 +9,7 @@
 @section('contents')
 <div class="container">
   <div class="title">
-    <h1>Pacita Travel E-Ticket $earch</h1>
+    <h1>Marco Polo Tours E-Ticket $earch</h1>
   </div>
   <div class="update-info">
     <h3>{{$num}} file(s) have been converted OR updated.</h3>
@@ -18,7 +18,7 @@
       <form action="/report" method="POST" target="_blank">
         <div class="input-group">
           <div class="form-field">
-            <label>Ticket Number without Airline Code :</label>
+            <label>Ticket Number without Airline Code:</label>
             <input class="ticket-field" type="text" name="ticketNumber" value="" placeholder="Enter the 10-Digit Tkt Number ">
           </div>
           <div class="form-field">
