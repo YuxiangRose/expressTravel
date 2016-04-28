@@ -9,7 +9,7 @@
 @section('contents')
 <div class="container">
   <div class="title">
-    <h1>Marco Polo Tours E-Ticket $earch</h1>
+    <h1>I & J Travel E-Ticket $earch</h1>
   </div>
   <div class="update-info">
     <h3>{{$num}} file(s) have been converted OR updated.</h3>
